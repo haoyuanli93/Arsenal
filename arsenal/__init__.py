@@ -1,4 +1,1 @@
-import sys
-sys.path.append("./")
-
-import haoyuanmath
+from arsenal.stats import *
