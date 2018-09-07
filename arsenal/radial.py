@@ -204,3 +204,13 @@ def get_wavelength(photon_energy):
     :return: 1.23984197386209e-06 / photon_energy . This is the wavelength in meter.
     """
     return 1.23984197386209e-06 / photon_energy
+
+
+def get_energy(wavelength):
+    """
+    Return the energy of the photon.
+
+    :param: wavelength: The wavelength energy in meter
+    :return: 1.23984197386209e-06 / wavelength . This is the wavelength in meter.
+    """
+    return 1.23984197386209e-06 / wavelength
