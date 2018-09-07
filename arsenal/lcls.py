@@ -61,3 +61,18 @@ def setup_exp(exp_name, run_num, det_name,
     mask_2d = det.image(evt, mask_stack)
 
     return
+
+
+# Get a sample
+def get_pattern_stack(detector, exp_run, event_id):
+    times = exp_run.times()
+    evt = exp_run.event(times[event_id])
+    pattern_stack = detector.calib(evt)
+    return pattern_stack
+
+
+def get_pattern_2d(detector, exp_run, event_id):
+    times = exp_run.times()
+    evt = exp_run.event(times[event_id])
+    pattern_2d = detector.image(evt)
+    return pattern_2d
