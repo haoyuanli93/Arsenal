@@ -3,6 +3,74 @@ from scipy import stats
 
 
 #####################################################################################
+# Calculate correlations
+#####################################################################################
+def correlation_n_to_1(n_instance, one_instance):
+    """
+    Calculate the correlation of n vectors and a single vector.
+
+    :param n_instance: A numpy array of the shape [n,m] where m is the dimension of the
+                        vectors.
+    :param one_instance: A numpy array of the shape [m] where m is the dimension of the
+                        vector.
+    :return: A numpy array of the shape [n] which the correlation coefficient.
+    """
+
+    # Get mean value
+    mean_n = np.mean(n_instance, axis=-1)
+    mean_1 = np.mean(one_instance)
+
+    # Shift to zero
+    n_instance -= mean_n
+    one_instance -= mean_1
+
+    # Get length
+    length_n = np.sqrt(np.sum(np.square(n_instance), axis=-1))
+    length_1 = np.sqrt(np.sum(np.square(one_instance)))
+
+    # Normalize the vectors
+    n_instance /= length_n
+    one_instance /= length_1
+
+    # Get inner product
+    inner = np.dot(n_instance, one_instance)
+
+    return inner
+
+
+def correlation_n_to_m(n_instance, m_instance):
+    """
+    Calculate the correlation of n vectors and a single vector.
+
+    :param n_instance: A numpy array of the shape [n, p] where p is the dimension of the
+                        vectors.
+    :param m_instance: A numpy array of the shape [m, p] where p is the dimension of the
+                        vector.
+    :return: A numpy array of the shape [n, m] which the correlation coefficient matrix.
+    """
+    # Get mean value
+    mean_n = np.mean(n_instance, axis=-1)
+    mean_m = np.mean(m_instance)
+
+    # Shift to zero
+    n_instance -= mean_n
+    m_instance -= mean_m
+
+    # Get length
+    length_n = np.sqrt(np.sum(np.square(n_instance), axis=-1))
+    length_m = np.sqrt(np.sum(np.square(m_instance), axis=-1))
+
+    # Normalize the vectors
+    n_instance /= length_n
+    m_instance /= length_m
+
+    # Get inner product
+    inner = np.matmul(n_instance, m_instance.T)
+
+    return inner
+
+
+#####################################################################################
 # Statistical Distances
 #####################################################################################
 
