@@ -162,4 +162,4 @@ def assemble_patterns_curve(y_data_array, y_range, x_data, x_range, row_num, col
                                                               np.zeros_like(x_data)))
                                      for l in range(index_num, row_num * col_num)})
 
-    return hv.GridSpace(image_holder).options(shared_axes=False)
+    return hv.GridSpace(image_holder).options(shared_xaxis=True, shared_yaxis=False)
