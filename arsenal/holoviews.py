@@ -237,4 +237,4 @@ def assemble_patterns_curve(y_data_array, y_range, x_data, x_range, row_num, col
                 x=(x_range[0], x_range[1]), y=(y_range[0], y_range[1]))
                 for l in range(index_num, row_num * col_num)})
 
-    return hv.NdLayout(image_holder)
+    return hv.GridSpace(image_holder)
