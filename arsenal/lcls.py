@@ -3,10 +3,13 @@ import numpy as np
 
 
 ###########################################################################################################
-# Data IO
+# CXI file position
 ###########################################################################################################
 
 
+###########################################################################################################
+# Data IO
+###########################################################################################################
 def setup_exp(exp_name, run_num, det_name,
               mask_calib_on=True,
               mask_status_on=True,
@@ -228,5 +231,28 @@ def cast_txt_to_numpy(iuput_file):
 
         # Construct the numpy array
         holder = np.array(holder)
-        
+
     return holder
+
+
+def get_cxi_file_position(exp_line, exp_name, user_name, process_stage, run_num):
+    """
+    Get the cxi file position saved by the psocake
+
+    :param exp_line: The experiment line: AMO or CXI or ...
+    :param exp_name: The experiment name: amo86615 amox26916 or ...
+    :param user_name: The user name
+    :param process_stage: The process stage: scratch or results ...
+    :param run_num: The run number
+    :return:
+    """
+
+    # Construct the file address of the corresponding cxi file
+    file_name = '/reg/d/psdm/{}/{}/{}/{}/psocake/r{:0>4d}/{}_{:0>4d}.cxi'.format(exp_line,
+                                                                                 exp_name,
+                                                                                 process_stage,
+                                                                                 user_name,
+                                                                                 run_num,
+                                                                                 exp_name,
+                                                                                 run_num)
+    return file_name
