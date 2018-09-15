@@ -5,6 +5,8 @@ import time
 import datetime
 import psana
 
+import arsenal.util
+
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
 import arsenal.lcls
@@ -49,7 +51,7 @@ with  h5.File(file_name, 'r') as h5file:
     holder = h5file['/LCLS/photon_wavelength_A'].value
     # convert to meter
     photon_wavelength = holder[0] / (10 ** 10)
-    photon_energy = arsenal.radial.get_energy(wavelength=photon_wavelength)
+    photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
 print("The photon wave length is {} m.".format(photon_wavelength))
 
 # Get detector

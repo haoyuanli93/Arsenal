@@ -1,4 +1,5 @@
 import numpy as np
+from arsenal.util import get_wavelength
 
 
 def get_radial_distribution(pattern, category_map, number_of_interval):
@@ -196,21 +197,3 @@ def get_momentum_map(coor_xyz, photon_energy):
     return refracted, coordinate, direction, length
 
 
-def get_wavelength(photon_energy):
-    """
-    Return the wavelength of the photon.
-
-    :param: photon_energy: The photon energy in eV
-    :return: 1.23984197386209e-06 / photon_energy . This is the wavelength in meter.
-    """
-    return 1.23984197386209e-06 / photon_energy
-
-
-def get_energy(wavelength):
-    """
-    Return the energy of the photon.
-
-    :param: wavelength: The wavelength energy in meter
-    :return: 1.23984197386209e-06 / wavelength . This is the wavelength in meter.
-    """
-    return 1.23984197386209e-06 / wavelength
