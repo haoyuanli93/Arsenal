@@ -1,10 +1,7 @@
-import numpy
+import numpy as np
 
 
-# import h5py
-
-
-def get_index_map_numpy(txt_file):
+def get_index_map_np(txt_file):
     """
     This function generate a numpy array that contains the map from global indexes to local indexes.
 
@@ -29,23 +26,23 @@ def get_index_map_numpy(txt_file):
     file_num = len(lines)
 
     # Loop through all files
-    for numpy_file in lines:
-        data = numpy.load(numpy_file)
+    for np_file in lines:
+        data = np.load(np_file)
         data_num = data.shape[0]
         data_num_list.append(data_num)
 
     # Create the map
-    data_num_tot = int(numpy.sum(numpy.array(data_num_list, dtype=numpy.int)))
-    index_map = numpy.zeros((data_num_tot, 3), dtype=numpy.int)
+    data_num_tot = int(np.sum(np.array(data_num_list, dtype=np.int)))
+    index_map = np.zeros((data_num_tot, 3), dtype=np.int)
 
     for l in range(file_num):
         # File indexes
         index_map[data_num_list[l]:data_num_list[l + 1], 0] = l
 
         # Local indexes
-        index_map[data_num_list[l]:data_num_list[l + 1], 1] = numpy.arange(data_num_list[l], dtype=numpy.int)
+        index_map[data_num_list[l]:data_num_list[l + 1], 1] = np.arange(data_num_list[l], dtype=np.int)
 
     # Global indexes
-    index_map[:, 2] = numpy.arange(data_num_tot, dtype=numpy.int)
+    index_map[:, 2] = np.arange(data_num_tot, dtype=np.int)
 
     return index_map

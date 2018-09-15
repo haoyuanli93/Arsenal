@@ -107,7 +107,17 @@ def get_scale(fscale):
 
 
 @jit
-def slice_merge(quaternion, _slice, model3d, weight, detector, size):
+def merge_single_slice(quaternion, _slice, model3d, weight, detector, size):
+    """
+    Merge the slice to the volume.
+
+    :param quaternion: The quaternion array
+    :param _slice: The slice to save
+
+    :param detector:
+    :param size:
+    :return:
+    """
     num_pix = _slice.shape[0]
     mask = detector[:, 4]
     center = size / 2.
