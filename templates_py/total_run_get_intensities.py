@@ -68,7 +68,7 @@ for pattern_idx in range(pattern_num):
         print("{:.2f} seconds.".format(time_holder[-1]))
 
 # Save the result
-output_file_name = output_address + '{}_run_{}_intensity_{}.h5'.format(exp_name, run_num, arsenal.util.time_stamp())
+output_file_name = output_address + '{}_run_{}_all_intensity_{}.h5'.format(exp_name, run_num, arsenal.util.time_stamp())
 print("Processing results will be saved to folder {}.".format(output_file_name))
 with h5.File(output_file_name, 'w') as h5file:
     h5file.create_dataset(name="mask", data=mask)

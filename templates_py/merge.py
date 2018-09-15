@@ -1,9 +1,10 @@
 from numba import jit
-import os, sys
+import sys
 import numpy as np
 import mpi4py.MPI as MPI
 import time
-
+sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
+import arsenal
 comm = MPI.COMM_WORLD
 comm_rank = comm.Get_rank()
 comm_size = comm.Get_size()
@@ -38,7 +39,7 @@ def make_rot_quat(quaternion):
     rot[2, 1] = 2. * (q23 - q01)
     rot[2, 2] = (1. - 2. * (q11 + q22))
 
-    return rot
+    return rot.T
 
 
 @jit

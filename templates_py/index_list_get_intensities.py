@@ -38,8 +38,7 @@ det, run, times, evt, info_dict = lcls.setup_exp(exp_name=exp_name,
                                                  det_name=det_name)
 
 # Get pattern number
-pattern_num = len(times)
-print("There are {} patterns in this run in total.".format(pattern_num))
+pattern_num = index_to_process.shape[0]
 
 # Get 2d boolean mask
 mask_2d = det.image(evt=evt, nda_in=mask)
@@ -55,6 +54,8 @@ intensity_holder = np.zeros(pattern_num)
 time_holder = [0, ]
 tic = time.time()
 
+# Local counter
+counter = 0
 for pattern_idx in index_to_process:
     # Get the pattern
     sample = lcls.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
@@ -63,20 +64,26 @@ for pattern_idx in index_to_process:
     sample_masked = sample[mask]
 
     # Get the intensity
-    intensity_holder[pattern_idx] = np.sum(sample_masked)
+    intensity_holder[counter] = np.sum(sample_masked)
 
-    if np.mod(pattern_idx, 100) == 0:
+    if np.mod(counter, 100) == 0:
         time_holder.append(time.time() - tic)
         print("{:.2f} seconds.".format(time_holder[-1]))
 
+    # Update the counter
+    counter += 1
+
 # Save the result
-output_file_name = output_address + '{}_run_{}_selected_list_intensity_{}.h5'.format(exp_name,
+output_file_name = output_address + '{}_run_{}_list_intensity_{}.h5'.format(exp_name,
                                                                                      run_num,
                                                                                      arsenal.util.time_stamp())
 print("Processing results will be saved to folder {}.".format(output_file_name))
 with h5.File(output_file_name, 'w') as h5file:
+    # Exp info
     h5file.create_dataset(name="mask", data=mask)
     h5file.create_dataset(name="mask_2d", data=mask_2d)
     h5file.create_dataset(name='index list', data=index_to_process)
+    # Result
     h5file.create_dataset(name="intensity", data=intensity_holder)
+    # Calculation statistics
     h5file.create_dataset(name="Time step per 100 patterns", data=time_holder)

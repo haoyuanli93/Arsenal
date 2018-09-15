@@ -23,6 +23,9 @@ output_address = '/reg/d/psdm/{}/{}/results/{}/'.format(exp_line, exp_name, user
 # Load mask
 mask = np.load('/reg/d/psdm/amo/amox26916/scratch/haoyuan/psocake/r0085/masks/pnccdFront_mask_hit_finder.npy')
 
+# Load the index to process
+index_to_process = np.load('../output/classification_round_4_hits_global_idx.npy')
+
 # Visualization Parameters
 number_of_interval = 300
 radial_range = "auto"
@@ -36,8 +39,7 @@ det, run, times, evt, info_dict = lcls.setup_exp(exp_name=exp_name,
                                                  det_name=det_name)
 
 # Get pattern number
-pattern_num = len(times)
-print("There are {} patterns in this run in total.".format(pattern_num))
+pattern_num = index_to_process.shape[0]
 
 # Get photon energy
 photon_energy = lcls.get_photon_energy(exp_line=exp_line,
@@ -83,36 +85,59 @@ print(category_list)
 #######################################################################################################################
 # Create a holder for all the distributions
 holder = np.zeros((pattern_num, category_num))
+# Create holder for intensities
+intensity_holder = np.zeros(pattern_num)
+
 # holder for calculation time
 time_holder = [0, ]
 tic = time.time()
 
-for pattern_idx in range(pattern_num):
+# Create a local counter
+counter = 0
+for pattern_idx in index_to_process:
     # Get the pattern
-    sample = lcls.get_pattern_stack(detector=det, exp_run=run, event_id=pattern_idx)
+    sample = lcls.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
 
+    # Get the intensity
+    intensity_holder[counter] = np.sum(sample_masked)
+
     # Get the distribution
     for cat_idx in range(category_num):
-        holder[pattern_idx, cat_idx] = np.mean(sample_masked[category_map_masked == category_list[cat_idx]])
+        holder[counter, cat_idx] = np.mean(sample_masked[category_map_masked == category_list[cat_idx]])
 
-    if np.mod(pattern_idx, 100) == 0:
+    if np.mod(counter, 100) == 0:
         time_holder.append(time.time() - tic)
         print("{:.2f} seconds.".format(time_holder[-1]))
 
+    # update the counter
+    counter += 1
+
 # Get a time stamp
-output_file = output_address + 'radial_distribution_run_{}_all_{}.h5'.format(run_num, arsenal.util.time_stamp())
+output_file = output_address + 'radial_distribution_and_intensity_run_{}_list_{}.h5'.format(run_num, arsenal.util.time_stamp())
 print("Processing results will be saved to folder {}.".format(output_file))
 
 # Save the result
 with h5.File(output_file, 'w') as h5file:
+    # Exp info
     h5file.create_dataset(name="mask", data=mask)
     h5file.create_dataset(name="mask 2d", data=mask_2d)
-    h5file.create_dataset(name="category_map", data=category_map)
     h5file.create_dataset(name="run_num", data=run_num)
-    h5file.create_dataset(name="radial_distribution", data=holder)
+    h5file.create_dataset(name='index list', data=index_to_process)
+
+    # Category info
+    h5file.create_dataset(name="category_map", data=category_map)
     h5file.create_dataset(name="category_num", data=category_num)
     h5file.create_dataset(name="category_list", data=category_list)
-    h5file.create_dataset(name="calculation_time", data=np.array(time_holder))
+
+    # Radial distribution
+    h5file.create_dataset(name="radial_distribution", data=holder)
+    h5file.create_dataset(name="intensity", data=intensity_holder)
+
+    # Average of the distribution
+    h5file.create_dataset(name="average_radial_distribution", data=np.mean(holder, axis=0))
+
+    # Calculate the name
+    h5file.create_dataset(name="Time step per 100 patterns", data=time_holder)

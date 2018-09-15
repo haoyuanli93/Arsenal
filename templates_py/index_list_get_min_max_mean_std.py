@@ -36,7 +36,7 @@ det, run, times, evt, info_dict = lcls.setup_exp(exp_name=exp_name,
                                                  det_name=det_name)
 
 # Get pattern number
-pattern_num = len(index_to_process)
+pattern_num = index_to_process.shape[0]
 
 ################################################################################
 # Divide the index list
