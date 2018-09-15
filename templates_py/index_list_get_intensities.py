@@ -1,12 +1,11 @@
-import sys
 import numpy as np
 import h5py as h5
 import time
-import psana
+import sys
 
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
-import arsenal.lcls
+from arsenal import lcls
 
 ###################################################################################
 # Define parameters
@@ -22,7 +21,10 @@ det_name = 'pnccdFront'
 process_stage = 'scratch'
 
 # Load mask
-mask_file = '/reg/d/psdm/amo/amox26916/scratch/haoyuan/psocake/r0085/masks/jet_streak_2.npy'
+mask = np.load('/reg/d/psdm/amo/amox26916/scratch/haoyuan/psocake/r0085/masks/jet_streak_2.npy')
+
+# Load the index to process
+index_to_process = np.load('../output/classification_round_4_hits_global_idx.npy')
 
 # Output info
 output_address = '/reg/d/psdm/{}/{}/results/{}/'.format(exp_line, exp_name, user_name)
@@ -31,16 +33,15 @@ output_address = '/reg/d/psdm/{}/{}/results/{}/'.format(exp_line, exp_name, user
 # Initialize the datasource and detector and mask
 ###################################################################################
 # Get data source
-det, run, times, evt, info_dict = arsenal.lcls.setup_exp(exp_name=exp_name,
-                                                         run_num=run_num,
-                                                         det_name=det_name)
+det, run, times, evt, info_dict = lcls.setup_exp(exp_name=exp_name,
+                                                 run_num=run_num,
+                                                 det_name=det_name)
 
 # Get pattern number
 pattern_num = len(times)
 print("There are {} patterns in this run in total.".format(pattern_num))
 
 # Get 2d boolean mask
-mask = np.load(mask_file)
 mask_2d = det.image(evt=evt, nda_in=mask)
 mask_bool = arsenal.util.cast_to_bool(mask=mask_2d, good=1, bad=0)
 
@@ -54,9 +55,9 @@ intensity_holder = np.zeros(pattern_num)
 time_holder = [0, ]
 tic = time.time()
 
-for pattern_idx in range(pattern_num):
+for pattern_idx in index_to_process:
     # Get the pattern
-    sample = arsenal.lcls.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
+    sample = lcls.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
@@ -69,9 +70,13 @@ for pattern_idx in range(pattern_num):
         print("{:.2f} seconds.".format(time_holder[-1]))
 
 # Save the result
-output_file_name = output_address + '{}_run_{}_intensity_{}.h5'.format(exp_name, run_num, arsenal.util.time_stamp())
+output_file_name = output_address + '{}_run_{}_selected_list_intensity_{}.h5'.format(exp_name,
+                                                                                     run_num,
+                                                                                     arsenal.util.time_stamp())
 print("Processing results will be saved to folder {}.".format(output_file_name))
 with h5.File(output_file_name, 'w') as h5file:
     h5file.create_dataset(name="mask", data=mask)
     h5file.create_dataset(name="mask_2d", data=mask_2d)
+    h5file.create_dataset(name='index list', data=index_to_process)
     h5file.create_dataset(name="intensity", data=intensity_holder)
+    h5file.create_dataset(name="Time step per 100 patterns", data=time_holder)

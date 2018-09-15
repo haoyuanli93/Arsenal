@@ -2,14 +2,13 @@ import sys
 import numpy as np
 import h5py as h5
 import time
-import psana
 
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
-import arsenal.lcls
+from arsenal import lcls
 
 ################################################################################
-# Specify the parameters to use
+# Define parameters
 ################################################################################
 exp_line = 'amo'
 exp_name = 'amox26916'
@@ -32,14 +31,9 @@ output_address = '../output/'
 # Intialize the detector
 ################################################################################
 # Get data source
-ds = psana.DataSource('exp={}:run={}:idx'.format(exp_name, run_num))
-run = ds.runs().next()
-env = ds.env()
-times = run.times()
-evt = run.event(times[0])
-
-# Get detector
-det = psana.Detector('pnccdFront', env)
+det, run, times, evt, info_dict = lcls.setup_exp(exp_name=exp_name,
+                                                 run_num=run_num,
+                                                 det_name=det_name)
 
 # Get pattern number
 pattern_num = len(index_to_process)
@@ -63,7 +57,7 @@ tic = time.time()
 counter = 0
 for idx in sub_lists[0]:
     # Get the pattern
-    data_holder[counter] = arsenal.lcls.get_pattern_stack(detector=det, exp_run=run, event_id=idx)
+    data_holder[counter] = lcls.get_pattern_stack(detector=det, exp_run=run, event_id=idx)
     # Update the local index
     counter += 1
 
@@ -91,7 +85,7 @@ for sub_list in sub_lists[1:]:
     counter = 0
     for idx in sub_list:
         # Get the pattern
-        data_holder[counter] = arsenal.lcls.get_pattern_stack(detector=det, exp_run=run, event_id=idx)
+        data_holder[counter] = lcls.get_pattern_stack(detector=det, exp_run=run, event_id=idx)
         # Update the local index
         counter += 1
 
@@ -114,23 +108,25 @@ for sub_list in sub_lists[1:]:
     print("Finishes processing batch {}".format(batch_counter))
     batch_counter += 1
 
+# Convert the sum and square sum into mean and std
+mean_holder = sum_holder / float(pattern_num)
+std_holder = np.sqrt(square_sum_holder / pattern_num - np.square(mean_holder))
+std_holder *= np.sqrt(pattern_num) / np.sqrt(pattern_num - 1)
+
 # Get a time stamp
 stamp = arsenal.util.time_stamp()
 
 # Save the result
 with h5.File(output_address + 'statistics_{}_{}_{}_{}.h5'.format(tag, exp_name, run_num, stamp), 'w') as h5file:
+
+    # Save some parameters
+    h5file.create_dataset("pattern_num", data=pattern_num)
+
+    # Save pattern stack
     h5file.create_dataset("min_stack", data=min_holder)
     h5file.create_dataset("max_stack", data=max_holder)
     h5file.create_dataset("sum_stack", data=sum_holder)
     h5file.create_dataset("square_sum_stack", data=square_sum_holder)
-
-    # Get mean and std
-    mean_holder = sum_holder / float(pattern_num)
-    std_holder = np.sqrt(square_sum_holder / pattern_num - np.square(mean_holder))
-    std_holder *= np.sqrt(pattern_num) / np.sqrt(pattern_num - 1)
-
-    # Save the results
-    h5file.create_dataset("pattern_num", data=pattern_num)
     h5file.create_dataset("mean_stack", data=mean_holder)
     h5file.create_dataset("std_stack", data=std_holder)
 
