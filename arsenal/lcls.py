@@ -31,7 +31,7 @@ def setup_exp(exp_name, run_num, det_name,
     """
 
     # Initialize the datasource
-    ds = psana.DataSource('exp={}:run{}:idx'.format(exp_name, run_num))
+    ds = psana.DataSource('exp={}:run={}:idx'.format(exp_name, run_num))
     run = ds.runs().next()
     times = run.times()
     env = ds.env()
@@ -280,3 +280,7 @@ def get_photon_energy(exp_line, exp_name, user_name, process_stage, run_num):
         photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
 
     return photon_energy
+
+
+
+
