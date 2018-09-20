@@ -97,3 +97,30 @@ def get_cxi_photon_energy(exp_line, exp_name, user_name, process_stage, run_num)
         photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
 
     return photon_energy
+
+
+def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num):
+    """
+    Get the photon energy from the cxi file
+
+    :param exp_line: The experiment line: AMO or CXI or ...
+    :param exp_name: The experiment name: amo86615 amox26916 or ...
+    :param user_name: The user name
+    :param process_stage: The process stage: scratch or results ...
+    :param run_num: The run number
+    :return:
+    """
+    # Construct the file address of the corresponding cxi file
+    file_name = get_cxi_file_position(exp_line=exp_line,
+                                      exp_name=exp_name,
+                                      process_stage=process_stage,
+                                      user_name=user_name,
+                                      run_num=run_num)
+    # Get photon energy
+    with h5.File(file_name, 'r') as h5file:
+        holder = h5file['/LCLS/photon_wavelength_A'].value
+        # convert to meter
+        photon_wavelength = holder[0] / (10 ** 10)
+        photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
+
+    return photon_energy
