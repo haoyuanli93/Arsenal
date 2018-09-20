@@ -3,6 +3,10 @@ import numpy as np
 import h5py as h5
 import arsenal.util
 
+"""
+This module focuses on applications in LCLS that does not require psana
+"""
+
 
 ###########################################################################################################
 # Data IO
@@ -259,7 +263,7 @@ def get_cxi_file_position(exp_line, exp_name, user_name, process_stage, run_num)
     return file_name
 
 
-def get_photon_energy(exp_line, exp_name, user_name, process_stage, run_num):
+def get_cxi_photon_energy(exp_line, exp_name, user_name, process_stage, run_num):
     """
     Get the photon energy from the cxi file
 

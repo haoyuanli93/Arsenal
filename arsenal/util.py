@@ -53,7 +53,7 @@ def cast_to_bool(mask, good=1, bad=0):
 
     # Cast the mask to boolean values
     mask_bool = np.zeros_like(mask, dtype=np.bool)
-    mask_bool[mask >= (good + bad) / 2] = True
-    mask_bool[mask < (good + bad) / 2] = False
+    mask_bool[mask >= (good + bad) / 2.] = True
+    mask_bool[mask < (good + bad) / 2.] = False
 
     return mask_bool
