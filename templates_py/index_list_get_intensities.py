@@ -3,7 +3,7 @@ import h5py as h5
 import time
 import sys
 
-import arsenal.psana
+import arsenal.psanautil
 
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
@@ -35,9 +35,9 @@ output_address = '/reg/d/psdm/{}/{}/results/{}/'.format(exp_line, exp_name, user
 # Initialize the datasource and detector and mask
 ###################################################################################
 # Get data source
-det, run, times, evt, info_dict = arsenal.psana.setup_exp(exp_name=exp_name,
-                                                          run_num=run_num,
-                                                          det_name=det_name)
+det, run, times, evt, info_dict = arsenal.psanautil.setup_exp(exp_name=exp_name,
+                                                              run_num=run_num,
+                                                              det_name=det_name)
 
 # Get pattern number
 pattern_num = index_to_process.shape[0]
@@ -60,7 +60,7 @@ tic = time.time()
 counter = 0
 for pattern_idx in index_to_process:
     # Get the pattern
-    sample = arsenal.psana.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
+    sample = arsenal.psanautil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
