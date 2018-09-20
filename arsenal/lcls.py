@@ -91,10 +91,8 @@ def get_cxi_photon_energy(exp_line, exp_name, user_name, process_stage, run_num)
                                       run_num=run_num)
     # Get photon energy
     with h5.File(file_name, 'r') as h5file:
-        holder = h5file['/LCLS/photon_wavelength_A'].value
-        # convert to meter
-        photon_wavelength = holder[0] / (10 ** 10)
-        photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
+        holder = np.array(h5file['/LCLS/photon_energy_eV'])
+        photon_energy = np.mean(holder)
 
     return photon_energy
 
@@ -116,11 +114,8 @@ def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num):
                                       process_stage=process_stage,
                                       user_name=user_name,
                                       run_num=run_num)
-    # Get photon energy
+    # Get event index energy
     with h5.File(file_name, 'r') as h5file:
-        holder = h5file['/LCLS/photon_wavelength_A'].value
-        # convert to meter
-        photon_wavelength = holder[0] / (10 ** 10)
-        photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
+        evt_idx_list = np.array(h5file['/LCLS/eventNumber'], dtype=np.int64)
 
-    return photon_energy
+    return evt_idx_list
