@@ -96,33 +96,35 @@ def get_pattern_2d(detector, exp_run, event_id):
 
 
 # Get a photon number sample
-def get_photon_stack(detector, exp_run, event_id):
+def get_photon_stack(detector, exp_run, event_id, adu_per_photon):
     """
     Get a photon stack from the detector from the specific run for the specified event id
 
     :param detector: The detector object
     :param exp_run: The run object
     :param event_id: The event it
+    :param adu_per_photon:
     :return: The pattern stack
     """
     times = exp_run.times()
     evt = exp_run.event(times[event_id])
-    pattern_stack = detector.photons(evt)
+    pattern_stack = detector.photons(evt=evt, adu_per_photon=adu_per_photon)
     return pattern_stack
 
 
-def get_photon_2d(detector, exp_run, event_id):
+def get_photon_2d(detector, exp_run, event_id, adu_per_photon):
     """
     Get a photon number pattern from the detector from the specific run for the specified event id
 
     :param detector: The detector object
     :param exp_run: The run object
     :param event_id: The event it
+    :param adu_per_photon:
     :return: The pattern
     """
     times = exp_run.times()
     evt = exp_run.event(times[event_id])
-    pattern_stack = detector.photons(evt=evt)
+    pattern_stack = detector.photons(evt=evt, adu_per_photon=adu_per_photon)
     pattern_2d = detector.image(evt=evt, nda_in=pattern_stack)
     return pattern_2d
 
@@ -159,7 +161,7 @@ def get_pattern_2d_fast(detector, exp_run, exp_times, event_id):
 
 
 # Get a photon number sample
-def get_photon_stack_fast(detector, exp_run, exp_times, event_id):
+def get_photon_stack_fast(detector, exp_run, exp_times, event_id, adu_per_photon):
     """
     Get a photon stack from the detector from the specific run for the specified event id
 
@@ -167,14 +169,15 @@ def get_photon_stack_fast(detector, exp_run, exp_times, event_id):
     :param exp_run: The run object
     :param exp_times: The time object
     :param event_id: The event it
+    :param adu_per_photon:
     :return: The pattern stack
     """
     evt = exp_run.event(exp_times[event_id])
-    pattern_stack = detector.photons(evt)
+    pattern_stack = detector.photons(evt=evt, adu_per_photon=adu_per_photon)
     return pattern_stack
 
 
-def get_photon_2d_fast(detector, exp_run, exp_times, event_id):
+def get_photon_2d_fast(detector, exp_run, exp_times, event_id, adu_per_photon):
     """
     Get a photon number pattern from the detector from the specific run for the specified event id
 
@@ -182,10 +185,11 @@ def get_photon_2d_fast(detector, exp_run, exp_times, event_id):
     :param exp_run: The run object
     :param exp_times: The time object
     :param event_id: The event it
+    :param adu_per_photon:
     :return: The pattern
     """
     evt = exp_run.event(exp_times[event_id])
-    pattern_stack = detector.photons(evt=evt)
+    pattern_stack = detector.photons(evt=evt, adu_per_photon=adu_per_photon)
     pattern_2d = detector.image(evt=evt, nda_in=pattern_stack)
     return pattern_2d
 
@@ -280,7 +284,3 @@ def get_photon_energy(exp_line, exp_name, user_name, process_stage, run_num):
         photon_energy = arsenal.util.get_energy(wavelength=photon_wavelength)
 
     return photon_energy
-
-
-
-
