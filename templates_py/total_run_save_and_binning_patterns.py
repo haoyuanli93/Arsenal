@@ -5,7 +5,7 @@ import h5py as h5
 import time
 import skimage.measure as skm
 
-import arsenal.psanautil
+import arsenal.PsanaUtil
 
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 from arsenal import lcls
@@ -44,7 +44,7 @@ print("The output address is {}".format(output_address))
 # [AUTO] Intialize the detector
 ####################################################################################################
 # Get data source
-det, run, times, evt, info_dict = arsenal.psanautil.setup_exp(exp_name=exp_name,
+det, run, times, evt, info_dict = arsenal.PsanaUtil.setup_exp(exp_name=exp_name,
                                                               run_num=run_num,
                                                               det_name=det_name)
 
@@ -58,10 +58,10 @@ index_to_process = np.arange(pattern_num, dtype=np.int64)
 ####################################################################################################
 if pattern_format == 'pattern_2d':
     sample_shape = info_dict['2D pattern shape']
-    get_pattern = arsenal.psanautil.get_pattern_2d_fast
+    get_pattern = arsenal.PsanaUtil.get_pattern_2d_fast
 else:
     sample_shape = info_dict['Pattern stack shape']
-    get_pattern = arsenal.psanautil.get_pattern_stack_fast
+    get_pattern = arsenal.PsanaUtil.get_pattern_stack_fast
 
 ####################################################################################################
 # [AUTO] Divide the index list

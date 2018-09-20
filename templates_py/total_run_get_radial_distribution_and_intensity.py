@@ -3,7 +3,7 @@ import numpy as np
 import h5py as h5
 import time
 
-import arsenal.psanautil
+import arsenal.PsanaUtil
 
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
@@ -33,7 +33,7 @@ radial_range = "auto"
 # Initialize datasource and the detector
 #######################################################################################################################
 # Get data source
-det, run, times, evt, info_dict = arsenal.psanautil.setup_exp(exp_name=exp_name,
+det, run, times, evt, info_dict = arsenal.PsanaUtil.setup_exp(exp_name=exp_name,
                                                               run_num=run_num,
                                                               det_name=det_name)
 
@@ -94,7 +94,7 @@ tic = time.time()
 # Create a local counter
 for pattern_idx in range(pattern_num):
     # Get the pattern
-    sample = arsenal.psanautil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
+    sample = arsenal.PsanaUtil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
