@@ -3,11 +3,9 @@ import numpy as np
 import h5py as h5
 import time
 
-import arsenal.PsanaUtil
-
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
-from arsenal import lcls
+from arsenal import PsanaUtil
 
 #######################################################################################################################
 # Define parameters
@@ -36,19 +34,19 @@ radial_range = "auto"
 # Initialize datasource and the detector
 #######################################################################################################################
 # Get data source
-det, run, times, evt, info_dict = arsenal.PsanaUtil.setup_exp(exp_name=exp_name,
-                                                              run_num=run_num,
-                                                              det_name=det_name)
+det, run, times, evt, info_dict = PsanaUtil.setup_exp(exp_name=exp_name,
+                                                      run_num=run_num,
+                                                      det_name=det_name)
 
 # Get pattern number
 pattern_num = index_to_process.shape[0]
 
 # Get photon energy
-photon_energy = lcls.get_photon_energy(exp_line=exp_line,
-                                       exp_name=exp_name,
-                                       process_stage=process_stage,
-                                       user_name=user_name,
-                                       run_num=run_num)
+photon_energy = arsenal.lcls.get_cxi_photon_energy(exp_line=exp_line,
+                                                   exp_name=exp_name,
+                                                   process_stage=process_stage,
+                                                   user_name=user_name,
+                                                   run_num=run_num)
 
 #######################################################################################################################
 # Load mask and cast to bool
@@ -98,7 +96,7 @@ tic = time.time()
 counter = 0
 for pattern_idx in index_to_process:
     # Get the pattern
-    sample = arsenal.PsanaUtil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
+    sample = PsanaUtil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
@@ -118,7 +116,8 @@ for pattern_idx in index_to_process:
     counter += 1
 
 # Get a time stamp
-output_file = output_address + 'radial_distribution_and_intensity_run_{}_list_{}.h5'.format(run_num, arsenal.util.time_stamp())
+output_file = output_address + 'radial_distribution_and_intensity_run_{}_list_{}.h5'.format(run_num,
+                                                                                            arsenal.util.time_stamp())
 print("Processing results will be saved to folder {}.".format(output_file))
 
 # Save the result

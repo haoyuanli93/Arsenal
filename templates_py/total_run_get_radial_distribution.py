@@ -3,11 +3,9 @@ import numpy as np
 import h5py as h5
 import time
 
-import arsenal.PsanaUtil
-
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
-from arsenal import lcls
+from arsenal import PsanaUtil
 
 #######################################################################################################################
 # Define parameters
@@ -33,20 +31,20 @@ radial_range = "auto"
 # Initialize datasource and the detector
 #######################################################################################################################
 # Get data source
-det, run, times, evt, info_dict = arsenal.PsanaUtil.setup_exp(exp_name=exp_name,
-                                                              run_num=run_num,
-                                                              det_name=det_name)
+det, run, times, evt, info_dict = PsanaUtil.setup_exp(exp_name=exp_name,
+                                                      run_num=run_num,
+                                                      det_name=det_name)
 
 # Get pattern number
 pattern_num = len(times)
 print("There are {} patterns in this run in total.".format(pattern_num))
 
 # Get photon energy
-photon_energy = lcls.get_photon_energy(exp_line=exp_line,
-                                       exp_name=exp_name,
-                                       process_stage=process_stage,
-                                       user_name=user_name,
-                                       run_num=run_num)
+photon_energy = arsenal.lcls.get_cxi_photon_energy(exp_line=exp_line,
+                                                   exp_name=exp_name,
+                                                   process_stage=process_stage,
+                                                   user_name=user_name,
+                                                   run_num=run_num)
 
 #######################################################################################################################
 # Load mask and cast to bool
@@ -91,7 +89,7 @@ tic = time.time()
 
 for pattern_idx in range(pattern_num):
     # Get the pattern
-    sample = arsenal.PsanaUtil.get_pattern_stack(detector=det, exp_run=run, event_id=pattern_idx)
+    sample = PsanaUtil.get_pattern_stack(detector=det, exp_run=run, event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
