@@ -29,7 +29,7 @@ def setup_exp(exp_name, run_num, det_name,
     """
 
     # Initialize the datasource
-    ds = psana.datasource('exp={}:run={}:idx'.format(exp_name, run_num))
+    ds = psana.DataSource('exp={}:run={}:idx'.format(exp_name, run_num))
     run = ds.runs().next()
     times = run.times()
     env = ds.env()
