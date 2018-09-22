@@ -53,7 +53,9 @@ def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, va
             image_holder.update({index_list[l]: tmp_image})
 
         # Use blank image to fill in the other spaces
-        image_holder.update({index_list[l]: hv.Image(np.zeros(data_shape, dtype=np.float64))
+        image_holder.update({index_list[l]: hv.Image(np.zeros(data_shape,
+                                                              dtype=np.float64)).options(height=height,
+                                                                                         width=width)
                              for l in range(index_num, row_num * col_num)})
 
     return hv.GridSpace(image_holder)
