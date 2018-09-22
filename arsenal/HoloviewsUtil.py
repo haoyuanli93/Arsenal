@@ -36,8 +36,10 @@ def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, va
         for x in range(row_num):
             for y in range(col_num):
                 tmp_image = hv.Image(data_holder[idxes[x, y]]).options(height=height,
-                                                                       width=width).redim.range(z=(value_range[0],
-                                                                                                   value_range[1]))
+                                                                       width=width,
+                                                                       cmap='jet'
+                                                                       ).redim.range(z=(value_range[0],
+                                                                                        value_range[1]))
 
                 image_holder.update({(x, y): tmp_image})
 
@@ -47,7 +49,8 @@ def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, va
         image_holder = {}
         for l in range(index_num):
             tmp_image = hv.Image(data_holder[index[l]]).options(height=height,
-                                                                width=width
+                                                                width=width,
+                                                                cmap='jet'
                                                                 ).redim.range(z=(value_range[0],
                                                                                  value_range[1]))
             image_holder.update({index_list[l]: tmp_image})
@@ -55,7 +58,8 @@ def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, va
         # Use blank image to fill in the other spaces
         image_holder.update({index_list[l]: hv.Image(np.zeros(data_shape,
                                                               dtype=np.float64)).options(height=height,
-                                                                                         width=width)
+                                                                                         width=width,
+                                                                                         cmap='jet')
                              for l in range(index_num, row_num * col_num)})
 
     return hv.GridSpace(image_holder)
