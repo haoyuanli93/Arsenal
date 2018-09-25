@@ -208,6 +208,6 @@ def log_likelihood_poisson_spi(samples, distributions):
     log_likelihood_max_idx = np.argmax(log_likelihood_array, axis=-1)
 
     # Extract the maximal log likelihood
-    log_likelihood_max = log_likelihood_array[:, log_likelihood_max_idx]
+    log_likelihood_max = np.max(log_likelihood_array, axis=-1)
 
     return log_likelihood_max, log_likelihood_max_idx, intensity
