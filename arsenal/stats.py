@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+from scipy.misc import factorial
 
 
 #####################################################################################
@@ -144,3 +145,69 @@ def js_distance_batch(p, q, base=np.e):
         holder[l] = js_distance(p[l], q[l], base=base)
 
     return holder
+
+
+def log_likelihood_poisson_spi(samples, distributions):
+    """
+    Attention: distribution can not contain any zero.
+
+    Calculate the log-likelihood of the sample from the distribution.
+    This function deal with the following special case:
+
+    In single particle experiments, one essentially does not know the intensity of the pattern.
+    Therefore, when one obtains an experiment pattern, he would only have some simulation patterns
+    with unknown intensity and orientations.
+
+    Therefore, one could simulate 10 000 diffraction patterns from different orientations,
+    and for each orientation, compare the experiment pattern and the simulation pattern and
+    calculate the largest log-likelihood for all possible intensities.
+
+    Poisson distribution is :  e^(-lambda I_n) (lambda I_n)^(k_n) / k_n !
+    where lambda is the overall intensity while I_n is the simulation value. Here I assume that the summation
+    of I_n to be one.
+
+    Therefore the log-likelihood on each pixel is
+
+                    -lambda I_n + k_n log (lambda I_n) - log(k_n !)
+
+    By summing up all the pixels over n and optimizing over lambda, one obtains that
+    the largest value is obtained when
+
+                    lambda = \sum k_n
+
+    This result is very intuitive.
+    Therefore the maximal log-likelihood for this pattern along that direction would be
+
+        (\sum k_n) log (\sum k_n)/e  + \sum (k_n log I_n)  -  \sum log (k_n !)
+
+    :param samples: Sample array [sample number, sample dimension] dtype has to be int.
+    :param distributions: Distribution arrays [orientation number, distribution dimension]  distribution dimension
+                            should be the same as the sample dimension.
+                            Attention: There can not be any value in the distribution to be zero.
+
+    :return: [[maximal log-likelihood, the corresponding orientation, the corresponding intensity],  <-- sample 1
+              [                                                                                  ],  <-- sample 2
+               ...
+               ]
+    """
+
+    # First step: Calculate the first term
+    intensity = np.sum(samples, axis=-1, dtype=np.float64)
+    first_term = np.multiply(intensity, np.log(intensity) - 1)
+
+    # Second step: Calculate the second term. The result is of shape [sample number, orientation number]
+    second_term = np.matmul(samples, np.log(np.transpose(distributions)))
+
+    # Third step: Calculate the third term
+    third_term = - np.sum(np.log(factorial(samples)), axis=-1)
+
+    # Combine three terms together
+    log_likelihood_array = first_term[:, np.newaxis] + second_term + third_term[:, np.newaxis]
+
+    # Find the maximal log likelihood orientation
+    log_likelihood_max_idx = np.argmax(log_likelihood_array, axis=-1)
+
+    # Extract the maximal log likelihood
+    log_likelihood_max = log_likelihood_array[:, log_likelihood_max_idx]
+
+    return log_likelihood_max, log_likelihood_max_idx, intensity
