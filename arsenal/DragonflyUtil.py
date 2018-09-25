@@ -86,6 +86,8 @@ def get_quaternion(fquaternion):
         valsplit = val.split(' ', 4)
         quaternion[idx, :] = [valsplit[0], valsplit[1], valsplit[2], valsplit[3]]
 
+    return quaternion
+
 
 def get_scale(fscale):
     """
