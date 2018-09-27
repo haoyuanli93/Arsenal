@@ -1,6 +1,7 @@
 import time
 import datetime
 import numpy as np
+import os
 
 
 def time_stamp():
@@ -57,3 +58,23 @@ def cast_to_bool(mask, good=1, bad=0):
     mask_bool[mask < (good + bad) / 2.] = False
 
     return mask_bool
+
+
+##########################################################################################################
+# File IO
+##########################################################################################################
+def make_directory(path):
+    """
+    This function safely create a path. If a path already exists, it does nothing
+    :param path:
+    :return:
+    """
+    try:
+        os.makedirs(path)
+        print("A new folder is created at {}.".format(path))
+    except OSError:
+        if os.path.isdir(path):
+            print("The folder {} already exists.".format(path))
+        else:
+            raise Exception("An error occurs when trying to create the folder {}".format(path) +
+                            "Please check the folder yourself.")
