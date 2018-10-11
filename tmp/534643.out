@@ -1,0 +1,109 @@
+kinit: KDC can't fulfill requested option while renewing credentials
+--------------------------------------------------------------------------
+No OpenFabrics connection schemes reported that they were able to be
+used on a specific port.  As such, the openib BTL (OpenFabrics
+support) will be disabled for this port.
+
+  Local host:           psana1613
+  Local device:         mlx4_0
+  Local port:           2
+  CPCs attempted:       udcm
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+An MPI process has executed an operation involving a call to the
+"fork()" system call to create a child process.  Open MPI is currently
+operating in a condition that could result in memory corruption or
+other system errors; your MPI job may hang, crash, or produce silent
+data corruption.  The use of fork() (or system() or other calls that
+create child processes) is strongly discouraged.  
+
+The process that invoked fork was:
+
+  Local host:          psana1613 (PID 5730)
+  MPI_COMM_WORLD rank: 0
+
+If you are *absolutely sure* that your application will successfully
+and correctly survive a call to fork(), you may disable this warning
+by setting the mpi_warn_on_fork MCA parameter to 0.
+--------------------------------------------------------------------------
+The output address is /reg/d/psdm/amo/amox34117/scratch/haoyuan/experiment_data/
+There are roughly 42 batches to process.
+It takes 30.26 seconds to process 101 patterns.
+It takes 31.20 seconds to process 101 patterns.
+It takes 29.81 seconds to process 101 patterns.
+It takes 31.15 seconds to process 101 patterns.
+It takes 30.06 seconds to process 101 patterns.
+It takes 30.27 seconds to process 101 patterns.
+It takes 30.17 seconds to process 101 patterns.
+It takes 29.31 seconds to process 101 patterns.
+It takes 30.14 seconds to process 101 patterns.
+It takes 29.63 seconds to process 101 patterns.
+It takes 29.47 seconds to process 101 patterns.
+It takes 29.57 seconds to process 101 patterns.
+It takes 29.89 seconds to process 101 patterns.
+It takes 29.31 seconds to process 101 patterns.
+It takes 29.10 seconds to process 101 patterns.
+It takes 29.44 seconds to process 101 patterns.
+It takes 29.26 seconds to process 101 patterns.
+It takes 29.90 seconds to process 101 patterns.
+It takes 31.04 seconds to process 101 patterns.
+It takes 30.50 seconds to process 101 patterns.
+It takes 30.22 seconds to process 101 patterns.
+It takes 28.43 seconds to process 101 patterns.
+It takes 30.16 seconds to process 101 patterns.
+It takes 30.28 seconds to process 101 patterns.
+It takes 29.68 seconds to process 101 patterns.
+It takes 29.79 seconds to process 101 patterns.
+It takes 29.46 seconds to process 101 patterns.
+It takes 29.89 seconds to process 101 patterns.
+It takes 29.31 seconds to process 101 patterns.
+It takes 29.26 seconds to process 101 patterns.
+It takes 28.33 seconds to process 100 patterns.
+It takes 29.42 seconds to process 100 patterns.
+It takes 29.22 seconds to process 100 patterns.
+It takes 29.99 seconds to process 100 patterns.
+It takes 29.77 seconds to process 100 patterns.
+It takes 29.64 seconds to process 100 patterns.
+It takes 29.18 seconds to process 100 patterns.
+It takes 26.58 seconds to process 100 patterns.
+It takes 28.80 seconds to process 100 patterns.
+It takes 29.21 seconds to process 100 patterns.
+It takes 28.59 seconds to process 100 patterns.
+It takes 27.09 seconds to process 100 patterns.
+
+------------------------------------------------------------
+Sender: LSF System <lsf@psana1613.pcdsn>
+Subject: Job 534643: <python index_2d_roi_save.py> in cluster <slac> Done
+
+Job <python index_2d_roi_save.py> was submitted from host <psanagpu101.pcdsn> by user <haoyuan> in cluster <slac> at Tue Sep 25 14:45:02 2018.
+Job was executed on host(s) <psana1613.pcdsn>, in queue <psfehq>, as user <haoyuan> in cluster <slac> at Tue Sep 25 14:45:03 2018.
+</reg/neh/home/haoyuan> was used as the home directory.
+</reg/d/psdm/amo/amox34117/scratch/haoyuan/hitfinder/src/development> was used as the working directory.
+Started at Tue Sep 25 14:45:03 2018.
+Terminated at Tue Sep 25 15:05:59 2018.
+Results reported at Tue Sep 25 15:05:59 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python index_2d_roi_save.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   903.37 sec.
+    Max Memory :                                 462 MB
+    Average Memory :                             447.45 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   1280 sec.
+    Turnaround time :                            1257 sec.
+
+The output (if any) is above this job summary.
+

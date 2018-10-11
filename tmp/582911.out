@@ -1,0 +1,99 @@
+kinit: KDC can't fulfill requested option while renewing credentials
+--------------------------------------------------------------------------
+An MPI process has executed an operation involving a call to the
+"fork()" system call to create a child process.  Open MPI is currently
+operating in a condition that could result in memory corruption or
+other system errors; your MPI job may hang, crash, or produce silent
+data corruption.  The use of fork() (or system() or other calls that
+create child processes) is strongly discouraged.  
+
+The process that invoked fork was:
+
+  Local host:          psana1110 (PID 13407)
+  MPI_COMM_WORLD rank: 0
+
+If you are *absolutely sure* that your application will successfully
+and correctly survive a call to fork(), you may disable this warning
+by setting the mpi_warn_on_fork MCA parameter to 0.
+--------------------------------------------------------------------------
+The output address is /reg/d/psdm/amo/amox34117/scratch/haoyuan/experiment_data/
+There are roughly 42 batches to process.
+It takes 35.67 seconds to process 101 patterns.
+It takes 34.12 seconds to process 101 patterns.
+It takes 34.42 seconds to process 101 patterns.
+It takes 35.02 seconds to process 101 patterns.
+It takes 34.64 seconds to process 101 patterns.
+It takes 34.16 seconds to process 101 patterns.
+It takes 35.28 seconds to process 101 patterns.
+It takes 39.42 seconds to process 101 patterns.
+It takes 34.83 seconds to process 101 patterns.
+It takes 33.51 seconds to process 101 patterns.
+It takes 34.04 seconds to process 101 patterns.
+It takes 35.88 seconds to process 101 patterns.
+It takes 34.65 seconds to process 101 patterns.
+It takes 33.69 seconds to process 101 patterns.
+It takes 34.36 seconds to process 101 patterns.
+It takes 35.85 seconds to process 101 patterns.
+It takes 35.14 seconds to process 101 patterns.
+It takes 33.55 seconds to process 101 patterns.
+It takes 32.81 seconds to process 101 patterns.
+It takes 32.93 seconds to process 101 patterns.
+It takes 32.85 seconds to process 101 patterns.
+It takes 32.03 seconds to process 101 patterns.
+It takes 33.17 seconds to process 101 patterns.
+It takes 39.11 seconds to process 101 patterns.
+It takes 36.64 seconds to process 101 patterns.
+It takes 38.67 seconds to process 101 patterns.
+It takes 37.12 seconds to process 101 patterns.
+It takes 40.53 seconds to process 101 patterns.
+It takes 37.09 seconds to process 101 patterns.
+It takes 38.18 seconds to process 101 patterns.
+It takes 32.78 seconds to process 100 patterns.
+It takes 33.42 seconds to process 100 patterns.
+It takes 32.31 seconds to process 100 patterns.
+It takes 32.39 seconds to process 100 patterns.
+It takes 32.69 seconds to process 100 patterns.
+It takes 32.40 seconds to process 100 patterns.
+It takes 32.26 seconds to process 100 patterns.
+It takes 32.07 seconds to process 100 patterns.
+It takes 31.99 seconds to process 100 patterns.
+It takes 32.20 seconds to process 100 patterns.
+It takes 32.39 seconds to process 100 patterns.
+It takes 32.37 seconds to process 100 patterns.
+
+------------------------------------------------------------
+Sender: LSF System <lsf@psana1110.pcdsn>
+Subject: Job 582911: <python index_2d_roi_save.py> in cluster <slac> Done
+
+Job <python index_2d_roi_save.py> was submitted from host <psanagpu113.pcdsn> by user <haoyuan> in cluster <slac> at Sat Sep 22 14:32:47 2018.
+Job was executed on host(s) <psana1110.pcdsn>, in queue <psanaq>, as user <haoyuan> in cluster <slac> at Sat Sep 22 14:32:48 2018.
+</reg/neh/home/haoyuan> was used as the home directory.
+</reg/d/psdm/amo/amox34117/scratch/haoyuan/hitfinder/src/development> was used as the working directory.
+Started at Sat Sep 22 14:32:48 2018.
+Terminated at Sat Sep 22 14:57:12 2018.
+Results reported at Sat Sep 22 14:57:12 2018.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python index_2d_roi_save.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   1025.71 sec.
+    Max Memory :                                 477 MB
+    Average Memory :                             464.23 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                7
+    Run time :                                   1490 sec.
+    Turnaround time :                            1465 sec.
+
+The output (if any) is above this job summary.
+
