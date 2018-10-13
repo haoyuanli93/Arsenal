@@ -9,7 +9,7 @@ import argparse
 ####################################################################################################
 # Parse the parameters
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_folder', type=int,
+parser.add_argument('--input_folder', type=str,
                     help="Specify the input folder containing all the patterns to classify.")
 
 args = parser.parse_args()
