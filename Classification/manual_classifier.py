@@ -4,16 +4,16 @@ from tkinter import ttk
 import glob
 import argparse
 
-
 ####################################################################################################
 # [USER] Specify the run number
 ####################################################################################################
 # Parse the parameters
 parser = argparse.ArgumentParser()
-parser.add_argument('--run_num', type=int, help="Specify the run num to process.")
+parser.add_argument('--input_folder', type=int,
+                    help="Specify the input folder containing all the patterns to classify.")
 
 args = parser.parse_args()
-run_num = args.run_num
+input_folder = args.input_folder
 
 ######################################################
 # Define Variables
@@ -29,7 +29,7 @@ image_index = None
 ######################################################
 def load_image_fun():
     global pattern, Img, image_index, label
-    pattern = PhotoImage(master=mainframe, file=image_files[image_index]).zoom(3)
+    pattern = PhotoImage(master=mainframe, file=input_folder + '/image_{}.png'.format(image_index)).zoom(3)
 
     Img.config(image=pattern)
     if not (label is None):
@@ -64,7 +64,7 @@ def load_label_fun():
 def save_label_fun():
     global label, save_label
     np.save(save_label.get(), label)
-    print("There are totally {} patterns classified.".format(label.shape[0]) + 
+    print("There are totally {} patterns classified.".format(label.shape[0]) +
           "{} of them are single hits.".format(int(np.sum(label[np.abs(label - 1) <= 0.1]))))
     return
 
@@ -132,13 +132,14 @@ def set_bad(*args):
     set_label_fun()
     return
 
+
 ######################################################
 # Setting up the Whole frame
 ######################################################
 
 root = Tk()
 root.title("Manual Classifier")
-root.option_add( "*font", "Helvetica 20" )
+root.option_add("*font", "Helvetica 20")
 
 style = ttk.Style()
 style.configure('.', font=('Helvetica', 20))
@@ -162,7 +163,7 @@ Img.grid(column=0, row=1, rowspan=8)
 
 # Load data
 data_address = StringVar()
-data_address.set('../output/run{}/'.format(run_num))
+data_address.set('../output/')
 
 Data_address = ttk.Entry(mainframe, textvariable=data_address, width=50)
 Data_address.grid(column=2, row=1, columnspan=2)
@@ -172,7 +173,7 @@ load_data_button.grid(column=1, row=1)
 
 # Create label 
 create_label = StringVar()
-create_label.set('../output/run{}/label_{}.npy'.format(run_num,run_num))
+create_label.set('../output/label.npy')
 
 Create_label = ttk.Entry(mainframe, textvariable=create_label, width=50)
 Create_label.grid(column=2, row=2)
@@ -182,7 +183,7 @@ create_label_button.grid(column=1, row=2)
 
 # Load label
 load_label = StringVar()
-load_label.set('../output/run{}/label_{}.npy'.format(run_num,run_num))
+load_label.set('../output/label.npy')
 
 Load_label = ttk.Entry(mainframe, textvariable=load_label, width=50)
 Load_label.grid(column=2, row=3)
@@ -192,7 +193,7 @@ load_label_button.grid(column=1, row=3)
 
 # Save label
 save_label = StringVar()
-save_label.set('../output/run{}/label_{}.npy'.format(run_num,run_num))
+save_label.set('../output/label.npy')
 
 Save_label = ttk.Entry(mainframe, textvariable=save_label, width=50)
 Save_label.grid(column=2, row=4)
