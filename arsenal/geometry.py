@@ -1,6 +1,8 @@
 import numpy as np
 from numba import jit
 
+from arsenal.rare import cummulate_product_with_local_exclusion_dim1
+
 
 @jit
 def quaternion_to_rotation_matrix(quaternion):
@@ -109,3 +111,125 @@ def get_nearest_point_and_weight(pixel_position_reciprocal, voxel_length):
     weight[:, :, :, 7] = np.prod(dfloor, axis=-1)
 
     return indexes, weight
+
+
+@jit('void(int64, float64[:], float64[:,:], float64[:])', nopython=True, parallel=True)
+def get_distance_list(pixel_num, single_point, reference_point_list, output):
+    """
+    Calculate the distances between the single points and
+    the reference point list and store them in the output variable.
+
+    :param pixel_num: The number of pixels to calculate.
+    :param single_point:  The single point to investigate
+    :param reference_point_list: The reference point
+    :param output: The output variable to store the result
+    :return: None
+    """
+    # Calculate the difference
+    for l in range(pixel_num):
+        output[l] = np.sqrt((reference_point_list[l, 0] - single_point[0]) ** 2 +
+                            (reference_point_list[l, 1] - single_point[1]) ** 2 +
+                            (reference_point_list[l, 2] - single_point[2]) ** 2)
+
+
+@jit('void(int64, int64, int64, float64[:,:], float64[:,:], int64[:,:], float64[:,:])', nopython=True, parallel=True)
+def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
+                                                     point_num_old,
+                                                     nearest_neighbor_num,
+                                                     old_point_list,
+                                                     new_point_list,
+                                                     nn_index_holder,
+                                                     nn_distance_holder):
+    """
+    Calculate the nearest neighbor of points in the new point list with respect to the old point list.
+
+    :param point_num_new:
+    :param point_num_old:
+    :param nearest_neighbor_num:
+    :param old_point_list:
+    :param new_point_list::
+    :param nn_distance_holder:
+    :param nn_index_holder:
+    :return:
+    """
+
+    # It turns out that this can be extremely slow considering that we have 1024*1024 pixels
+    distance_holder = np.ascontiguousarray(np.ones(point_num_old, dtype=np.float64))
+
+    for l in range(point_num_new):
+        # Step 1: Calculate the distance matrix.
+        # Calculate the distance
+        get_distance_list(pixel_num=point_num_old,
+                          single_point=new_point_list[l, :],
+                          reference_point_list=old_point_list,
+                          output=distance_holder)
+
+        # Step 2: Sort the distance and find the nearest neighbor index
+        nn_index_holder[l, :] = np.argsort(distance_holder)[:]
+
+        # Step 3: Extract the distance
+        for m in range(nearest_neighbor_num):
+            nn_distance_holder[l, m] = distance_holder[m]
+
+
+def py_get_nearest_point_index_and_weight_3d(point_list_old, point_list_new, nearest_neighbor_num):
+    """
+    Get the nearest point index and weight in old_point_list for each point in the new_point_list
+
+    Assume that the contribution is proportional to the product of the other distances
+
+    :param point_list_old: [point_number_old, 3]  dtype=float32
+    :param point_list_new: [point_number_new, 3]  dtype=float32
+    :param nearest_neighbor_num:
+    :return: index, weight
+    """
+
+    # Create variables
+    point_num_new = point_list_new.shape[0]
+    point_num_old = point_list_old.shape[0]
+
+    nn_index_holder = np.ascontiguousarray(np.ones((point_list_new, nearest_neighbor_num), dtype=np.int64))
+    nn_distance_holder = np.ascontiguousarray(np.ones((point_list_new, nearest_neighbor_num), dtype=np.float64))
+
+    # Calculate the nearest neighbor
+    get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new=point_num_new,
+                                                     point_num_old=point_num_old,
+                                                     nearest_neighbor_num=nearest_neighbor_num,
+                                                     old_point_list=point_list_old,
+                                                     new_point_list=point_list_new,
+                                                     nn_index_holder=nn_index_holder,
+                                                     nn_distance_holder=nn_distance_holder)
+
+    # Calculate the weight
+    nn_weight_holder = cummulate_product_with_local_exclusion_dim1(num_dim1=nearest_neighbor_num,
+                                                                   arry=nn_distance_holder)
+    tmp = np.sum(nn_weight_holder)  # To normalize the weight to get a probability distribution
+
+    # Normalize the weight to get the probability distribution
+    np.divide(nn_weight_holder, tmp[:, np.newaxis], out=nn_weight_holder)
+    return nn_index_holder, nn_weight_holder
+
+
+########################################################################################################################
+# Detector data mapping
+########################################################################################################################
+@jit(nopython=True, parallel=True)
+def detector_mapping(pixel_num, nearest_neighbor_num, index_map, weight, raw_pattern, new_pattern):
+    """
+    perform the detector geometry map with the index map the weight info and the raw pattern to map
+
+    Notice that here, one does not scale the result with the weight
+    summation of the weight on each pixel in the new pattern
+
+    :param pixel_num:
+    :param nearest_neighbor_num:
+    :param index_map:
+    :param weight:
+    :param raw_pattern:
+    :param new_pattern: Output
+    :return:
+    """
+
+    for l in range(pixel_num):
+        for n in range(nearest_neighbor_num):
+            new_pattern[index_map[l, n]] += raw_pattern[l] * weight[l, n]
