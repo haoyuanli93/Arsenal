@@ -165,7 +165,7 @@ def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
                           output=distance_holder)
 
         # Step 2: Sort the distance and find the nearest neighbor index
-        nn_index_holder[l, :] = np.argsort(distance_holder)[:]
+        nn_index_holder[l, :] = np.argsort(distance_holder)[:nearest_neighbor_num]
 
         # Step 3: Extract the distance
         for m in range(nearest_neighbor_num):
