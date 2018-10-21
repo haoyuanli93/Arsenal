@@ -134,7 +134,7 @@ def get_distance_list(pixel_num, single_point, reference_point_list, output):
 
 @jit('void(int64, int64, int64, float64[:,:], float64[:,:], int64[:,:], float64[:,:])', nopython=True, parallel=True)
 def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
-                                                     point_num_old,
+                                                     point_num_ref,
                                                      nearest_neighbor_num,
                                                      old_point_list,
                                                      new_point_list,
@@ -144,7 +144,7 @@ def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
     Calculate the nearest neighbor of points in the new point list with respect to the old point list.
 
     :param point_num_new:
-    :param point_num_old:
+    :param point_num_ref:
     :param nearest_neighbor_num:
     :param old_point_list:
     :param new_point_list::
@@ -154,12 +154,12 @@ def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
     """
 
     # It turns out that this can be extremely slow considering that we have 1024*1024 pixels
-    distance_holder = np.ascontiguousarray(np.ones(point_num_old, dtype=np.float64))
+    distance_holder = np.ascontiguousarray(np.ones(point_num_ref, dtype=np.float64))
 
     for l in range(point_num_new):
         # Step 1: Calculate the distance matrix.
         # Calculate the distance
-        get_distance_list(pixel_num=point_num_old,
+        get_distance_list(pixel_num=point_num_ref,
                           single_point=new_point_list[l, :],
                           reference_point_list=old_point_list,
                           output=distance_holder)
@@ -172,13 +172,13 @@ def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
             nn_distance_holder[l, m] = distance_holder[m]
 
 
-def py_get_nearest_point_index_and_weight_3d(point_list_old, point_list_new, nearest_neighbor_num):
+def py_get_nearest_point_index_and_weight_3d(point_list_ref, point_list_new, nearest_neighbor_num):
     """
     Get the nearest point index and weight in old_point_list for each point in the new_point_list
 
     Assume that the contribution is proportional to the product of the other distances
 
-    :param point_list_old: [point_number_old, 3]  dtype=float32
+    :param point_list_ref: [point_number_old, 3]  dtype=float32
     :param point_list_new: [point_number_new, 3]  dtype=float32
     :param nearest_neighbor_num:
     :return: index, weight
@@ -186,16 +186,16 @@ def py_get_nearest_point_index_and_weight_3d(point_list_old, point_list_new, nea
 
     # Create variables
     point_num_new = point_list_new.shape[0]
-    point_num_old = point_list_old.shape[0]
+    point_num_ref = point_list_ref.shape[0]
 
-    nn_index_holder = np.ascontiguousarray(np.ones((point_list_new, nearest_neighbor_num), dtype=np.int64))
-    nn_distance_holder = np.ascontiguousarray(np.ones((point_list_new, nearest_neighbor_num), dtype=np.float64))
+    nn_index_holder = np.ascontiguousarray(np.ones((point_num_new, nearest_neighbor_num), dtype=np.int64))
+    nn_distance_holder = np.ascontiguousarray(np.ones((point_num_new, nearest_neighbor_num), dtype=np.float64))
 
     # Calculate the nearest neighbor
     get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new=point_num_new,
-                                                     point_num_old=point_num_old,
+                                                     point_num_ref=point_num_ref,
                                                      nearest_neighbor_num=nearest_neighbor_num,
-                                                     old_point_list=point_list_old,
+                                                     old_point_list=point_list_ref,
                                                      new_point_list=point_list_new,
                                                      nn_index_holder=nn_index_holder,
                                                      nn_distance_holder=nn_distance_holder)
