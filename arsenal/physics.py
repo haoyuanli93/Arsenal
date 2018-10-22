@@ -31,3 +31,14 @@ def get_scattered_momentum(position_in_meter, wavevector_in_meter):
     scattered_momentum = wavevector_length * scattered_direction
 
     return scattered_momentum
+
+
+def get_polarization_effect(pixel_position_m, pixel_orientation, wavevector_in_meter):
+    """
+    
+    :param pixel_position_m:
+    :param pixel_orientation:
+    :param wavevector_in_meter:
+    :return:
+    """
+    pass

@@ -4,6 +4,9 @@ from numba import jit
 from arsenal.rare import cummulate_product_with_local_exclusion_dim1
 
 
+########################################################################################################################
+# General geometric functions
+########################################################################################################################
 @jit
 def quaternion_to_rotation_matrix(quaternion):
     """
@@ -42,77 +45,67 @@ def quaternion_to_rotation_matrix(quaternion):
 
 
 ########################################################################################################################
-# Grid Geometry
+# General geometric functions
 ########################################################################################################################
-@jit(nonpython=True, parallel=True)
-def get_nearest_point_and_weight(pixel_position_reciprocal, voxel_length):
+def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference_point_m):
     """
-    In a 3D space, assume that we have a position vector (x,y,z) and we know the length each pixel represents,
-    then calculate the nearest
+    Calculate the solid angle for each pixel with respect to the reference point.
 
-    :param pixel_position_reciprocal: The position of each pixel in the reciprocal space in
-    :param voxel_length:
-    :return:
+    I assume the following situation:
+
+                                           |    --- pixel 1
+                                            \   --- pixel 2
+                    ----> ref point.
+                                            /   --- pixel 3
+                                           _    --- pixel 4
+
+    Each pixel has an independent orientation and area and position. This position is the absolute position
+    with respect to some known origin. The reference is the interaction center. The solid angle is calculated
+    with respect to this reference point.
+
+    :param pixel_area_m: This is the pixel area in meter. This is a 1d array.
+    :param pixel_position_m: This the pixel position in meter. This is a 2D array. [pixel number, 3]
+                              [[x0,y0,z0] -- pixel 0
+                               [x1,y1,z1] -- pixel 1
+                               ...
+                               ]
+    :param pixel_orientation:  This is the normal direction of each pixel with respect the origin.
+                                This is a 2D array. [pixel number, 3]
+
+                              [[x0,y0,z0] -- pixel 0
+                               [x1,y1,z1] -- pixel 1
+                               ...
+                               ]
+    :param reference_point_m:  This is the position of the reference point with respect to the origin in meter.
+    :return: The solid angle of each pixel.
     """
-    # convert_to_voxel_unit
-    pixel_position_voxel_unit = pixel_position_reciprocal / voxel_length
 
-    # Get the indexes of the eight nearest points.
-    num_panel, num_x, num_y, _ = pixel_position_reciprocal.shape
+    # Calculate the position of the pixels with respect to the reference point
+    relative_position = pixel_position_m - reference_point_m[np.newaxis, :]
 
-    # Get one nearest neighbor
-    _indexes = np.floor(pixel_position_voxel_unit).astype(np.int64)
+    # Calculate the distance and direction of each pixel in real space w.r.t. the reference point
+    pixel_distances = np.sqrt(np.sum(np.square(relative_position), axis=-1))
+    pixel_directions = np.divide(relative_position, pixel_distances[:, np.newaxis])
 
-    # Generate the holders
-    indexes = np.zeros((num_panel, num_x, num_y, 8, 3), dtype=np.int64)
-    weight = np.ones((num_panel, num_x, num_y, 8), dtype=np.float64)
+    # Calculate the cosine of the angle between the normal direction of each pixel
+    # and the direction between the pixel and the reference point. The underlying formula is
+    #
+    #     solid_angle = area*cos(theta) / (4*pi*distance^2) = area * <normal, direction>  / (4*pi*distance^2)
+    #
+    # Here, area*cos(theta) is the area perpendicular to the radius.
 
-    # Calculate the floors and the ceilings
-    dfloor = pixel_position_voxel_unit - indexes
-    dceiling = 1 - dfloor
+    true_area = np.multiply(pixel_area_m, np.sum(np.multiply(pixel_orientation, pixel_directions), axis=-1))
+    # Because the normal direction can be either positive or negative, but
+    # solid angle can only be positive, take absolute values.
+    true_area = np.abs(true_area)
 
-    # Assign the correct values to the indexes
-    indexes[:, :, :, 0, :] = _indexes
-
-    indexes[:, :, :, 1, 0] = _indexes[:, :, :, 0]
-    indexes[:, :, :, 1, 1] = _indexes[:, :, :, 1]
-    indexes[:, :, :, 1, 2] = _indexes[:, :, :, 2] + 1
-
-    indexes[:, :, :, 2, 0] = _indexes[:, :, :, 0]
-    indexes[:, :, :, 2, 1] = _indexes[:, :, :, 1] + 1
-    indexes[:, :, :, 2, 2] = _indexes[:, :, :, 2]
-
-    indexes[:, :, :, 3, 0] = _indexes[:, :, :, 0]
-    indexes[:, :, :, 3, 1] = _indexes[:, :, :, 1] + 1
-    indexes[:, :, :, 3, 2] = _indexes[:, :, :, 2] + 1
-
-    indexes[:, :, :, 4, 0] = _indexes[:, :, :, 0] + 1
-    indexes[:, :, :, 4, 1] = _indexes[:, :, :, 1]
-    indexes[:, :, :, 4, 2] = _indexes[:, :, :, 2]
-
-    indexes[:, :, :, 5, 0] = _indexes[:, :, :, 0] + 1
-    indexes[:, :, :, 5, 1] = _indexes[:, :, :, 1]
-    indexes[:, :, :, 5, 2] = _indexes[:, :, :, 2] + 1
-
-    indexes[:, :, :, 6, 0] = _indexes[:, :, :, 0] + 1
-    indexes[:, :, :, 6, 1] = _indexes[:, :, :, 1] + 1
-    indexes[:, :, :, 6, 2] = _indexes[:, :, :, 2]
-
-    indexes[:, :, :, 7, :] = _indexes + 1
-
-    # Assign the correct values to the weight
-    weight[:, :, :, 0] = np.prod(dceiling, axis=-1)
-    weight[:, :, :, 1] = dceiling[:, :, :, 0] * dceiling[:, :, :, 1] * dfloor[:, :, :, 2]
-    weight[:, :, :, 2] = dceiling[:, :, :, 0] * dfloor[:, :, :, 1] * dceiling[:, :, :, 2]
-    weight[:, :, :, 3] = dceiling[:, :, :, 0] * dfloor[:, :, :, 1] * dfloor[:, :, :, 2]
-    weight[:, :, :, 4] = dfloor[:, :, :, 0] * dceiling[:, :, :, 1] * dceiling[:, :, :, 2]
-    weight[:, :, :, 5] = dfloor[:, :, :, 0] * dceiling[:, :, :, 1] * dfloor[:, :, :, 2]
-    weight[:, :, :, 6] = dfloor[:, :, :, 0] * dfloor[:, :, :, 1] * dceiling[:, :, :, 2]
-    weight[:, :, :, 7] = np.prod(dfloor, axis=-1)
-
-    return indexes, weight
+    solid_angle = np.divide(true_area, 4 * np.pi * np.square(pixel_distances))
+    return solid_angle
 
 
+########################################################################################################################
+# General pixel interpolation
+########################################################################################################################
 @jit('void(int64, float64[:], float64[:,:], float64[:])', nopython=True, parallel=True)
 def get_distance_list(pixel_num, single_point, reference_point_list, output):
     """
@@ -210,9 +203,6 @@ def py_get_nearest_point_index_and_weight_3d(point_list_ref, point_list_new, nea
     return nn_index_holder, nn_weight_holder
 
 
-########################################################################################################################
-# Detector data mapping
-########################################################################################################################
 @jit(nopython=True, parallel=True)
 def detector_mapping(pixel_num, nearest_neighbor_num, index_map, weight, raw_pattern, new_pattern):
     """
@@ -233,3 +223,75 @@ def detector_mapping(pixel_num, nearest_neighbor_num, index_map, weight, raw_pat
     for l in range(pixel_num):
         for n in range(nearest_neighbor_num):
             new_pattern[index_map[l, n]] += raw_pattern[l] * weight[l, n]
+
+
+########################################################################################################################
+# Geometry function for special cases
+########################################################################################################################
+@jit(nonpython=True, parallel=True)
+def get_nearest_point_and_weight(pixel_position_reciprocal, voxel_length):
+    """
+    In a 3D space, assume that we have a position vector (x,y,z) and we know the length each pixel represents,
+    then calculate the nearest
+
+    :param pixel_position_reciprocal: The position of each pixel in the reciprocal space in
+    :param voxel_length:
+    :return:
+    """
+    # convert_to_voxel_unit
+    pixel_position_voxel_unit = pixel_position_reciprocal / voxel_length
+
+    # Get the indexes of the eight nearest points.
+    num_panel, num_x, num_y, _ = pixel_position_reciprocal.shape
+
+    # Get one nearest neighbor
+    _indexes = np.floor(pixel_position_voxel_unit).astype(np.int64)
+
+    # Generate the holders
+    indexes = np.zeros((num_panel, num_x, num_y, 8, 3), dtype=np.int64)
+    weight = np.ones((num_panel, num_x, num_y, 8), dtype=np.float64)
+
+    # Calculate the floors and the ceilings
+    dfloor = pixel_position_voxel_unit - indexes
+    dceiling = 1 - dfloor
+
+    # Assign the correct values to the indexes
+    indexes[:, :, :, 0, :] = _indexes
+
+    indexes[:, :, :, 1, 0] = _indexes[:, :, :, 0]
+    indexes[:, :, :, 1, 1] = _indexes[:, :, :, 1]
+    indexes[:, :, :, 1, 2] = _indexes[:, :, :, 2] + 1
+
+    indexes[:, :, :, 2, 0] = _indexes[:, :, :, 0]
+    indexes[:, :, :, 2, 1] = _indexes[:, :, :, 1] + 1
+    indexes[:, :, :, 2, 2] = _indexes[:, :, :, 2]
+
+    indexes[:, :, :, 3, 0] = _indexes[:, :, :, 0]
+    indexes[:, :, :, 3, 1] = _indexes[:, :, :, 1] + 1
+    indexes[:, :, :, 3, 2] = _indexes[:, :, :, 2] + 1
+
+    indexes[:, :, :, 4, 0] = _indexes[:, :, :, 0] + 1
+    indexes[:, :, :, 4, 1] = _indexes[:, :, :, 1]
+    indexes[:, :, :, 4, 2] = _indexes[:, :, :, 2]
+
+    indexes[:, :, :, 5, 0] = _indexes[:, :, :, 0] + 1
+    indexes[:, :, :, 5, 1] = _indexes[:, :, :, 1]
+    indexes[:, :, :, 5, 2] = _indexes[:, :, :, 2] + 1
+
+    indexes[:, :, :, 6, 0] = _indexes[:, :, :, 0] + 1
+    indexes[:, :, :, 6, 1] = _indexes[:, :, :, 1] + 1
+    indexes[:, :, :, 6, 2] = _indexes[:, :, :, 2]
+
+    indexes[:, :, :, 7, :] = _indexes + 1
+
+    # Assign the correct values to the weight
+    weight[:, :, :, 0] = np.prod(dceiling, axis=-1)
+    weight[:, :, :, 1] = dceiling[:, :, :, 0] * dceiling[:, :, :, 1] * dfloor[:, :, :, 2]
+    weight[:, :, :, 2] = dceiling[:, :, :, 0] * dfloor[:, :, :, 1] * dceiling[:, :, :, 2]
+    weight[:, :, :, 3] = dceiling[:, :, :, 0] * dfloor[:, :, :, 1] * dfloor[:, :, :, 2]
+    weight[:, :, :, 4] = dfloor[:, :, :, 0] * dceiling[:, :, :, 1] * dceiling[:, :, :, 2]
+    weight[:, :, :, 5] = dfloor[:, :, :, 0] * dceiling[:, :, :, 1] * dfloor[:, :, :, 2]
+    weight[:, :, :, 6] = dfloor[:, :, :, 0] * dfloor[:, :, :, 1] * dceiling[:, :, :, 2]
+    weight[:, :, :, 7] = np.prod(dfloor, axis=-1)
+
+    return indexes, weight
