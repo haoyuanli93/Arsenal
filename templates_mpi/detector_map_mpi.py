@@ -1,4 +1,5 @@
 import sys
+import time
 
 import h5py as h5
 import numpy as np
@@ -101,9 +102,16 @@ jobs_list = np.array_split(np.arange(pixel_number_exists), batch_num)
 # I need to calculate the corresponding index and weight for each pixels in the old detector to the new detector
 pixel_position_exists_1d_job = np.ascontiguousarray(pixel_position_exists_1d[jobs_list[comm_rank]])
 
+tic = time.time()
+print("Process {} begins to process the pixels.".format(comm_rank))
 index_map_job, weight_map_job = ag.py_get_nearest_point_index_and_weight_3d(point_list_ref=pixel_position_desired_1d,
                                                                             point_list_new=pixel_position_exists_1d_job,
                                                                             nearest_neighbor_num=4)
+toc = time.time()
+print('Process {} takes {:.2f} seconds to finish {} pixels.'.format(comm_rank,
+                                                                    toc - tic,
+                                                                    jobs_list[comm_rank].shape[0]))
+
 comm.Barrier()  # Synchronize
 index_map_collect = comm.gather(index_map_job, root=0)
 weight_map_collect = comm.gather(weight_map_job, root=0)
