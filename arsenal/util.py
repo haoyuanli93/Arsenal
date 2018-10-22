@@ -1,7 +1,8 @@
-import time
 import datetime
-import numpy as np
 import os
+import time
+
+import numpy as np
 
 
 def time_stamp():
@@ -16,24 +17,25 @@ def time_stamp():
 ###########################################################################################################
 # photon properties
 ###########################################################################################################
-def get_wavelength(photon_energy):
+def get_wavelength_m(photon_energy_ev):
     """
     Return the wavelength of the photon.
 
     :param: photon_energy: The photon energy in eV
     :return: 1.23984197386209e-06 / photon_energy . This is the wavelength in meter.
     """
-    return 1.23984197386209e-06 / photon_energy
+    return 1.23984197386209e-06 / photon_energy_ev
 
 
-def get_energy(wavelength):
+def get_energy_ev(wavelength_m):
     """
     Return the energy of the photon.
 
-    :param: wavelength: The wavelength energy in meter
+    :param: wavelength_m: The wavelength energy in meter
     :return: 1.23984197386209e-06 / wavelength . This is the wavelength in meter.
+            This is in eV
     """
-    return 1.23984197386209e-06 / wavelength
+    return 1.23984197386209e-06 / wavelength_m
 
 
 ###########################################################################################################

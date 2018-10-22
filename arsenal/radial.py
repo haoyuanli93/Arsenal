@@ -1,5 +1,5 @@
 import numpy as np
-from arsenal.util import get_wavelength
+from arsenal.util import get_wavelength_m
 
 
 def get_radial_distribution(pattern, category_map, number_of_interval):
@@ -190,7 +190,7 @@ def get_momentum_map(coor_xyz, photon_energy):
     refracted[:, :, :, 2] -= 1
 
     # Get diffraction momentum
-    wavelength = get_wavelength(photon_energy)
+    wavelength = get_wavelength_m(photon_energy)
 
     refracted *= 2. * np.pi / wavelength
 
