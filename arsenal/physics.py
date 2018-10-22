@@ -22,7 +22,7 @@ def get_scattered_momentum(position_in_meter, wavevector_in_meter):
 
     # Normalize the position vector
     pixel_distances = np.sqrt(np.sum(np.square(position_in_meter), axis=-1))
-    pixel_directions = np.divide(position_in_meter, pixel_distances[np.newaxis, :])
+    pixel_directions = np.divide(position_in_meter, pixel_distances[:, np.newaxis])
 
     # Get the direction of the scattered momentum
     scattered_direction = pixel_directions - wavevector_direction[np.newaxis, :]
