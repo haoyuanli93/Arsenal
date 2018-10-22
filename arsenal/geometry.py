@@ -90,7 +90,7 @@ def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference
     # Calculate the cosine of the angle between the normal direction of each pixel
     # and the direction between the pixel and the reference point. The underlying formula is
     #
-    #     solid_angle = area*cos(theta) / (4*pi*distance^2) = area * <normal, direction>  / (4*pi*distance^2)
+    #     solid_angle = area*cos(theta) / distance^2 = area * <normal, direction>  / distance^2
     #
     # Here, area*cos(theta) is the area perpendicular to the radius.
 
@@ -99,7 +99,7 @@ def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference
     # solid angle can only be positive, take absolute values.
     true_area = np.abs(true_area)
 
-    solid_angle = np.divide(true_area, 4 * np.pi * np.square(pixel_distances))
+    solid_angle = np.divide(true_area, np.square(pixel_distances))
     return solid_angle
 
 
