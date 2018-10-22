@@ -203,7 +203,7 @@ def py_get_nearest_point_index_and_weight_3d(point_list_ref, point_list_new, nea
     # Calculate the weight
     nn_weight_holder = cummulate_product_with_local_exclusion_dim1(num_dim1=nearest_neighbor_num,
                                                                    arry=nn_distance_holder)
-    tmp = np.sum(nn_weight_holder)  # To normalize the weight to get a probability distribution
+    tmp = np.sum(nn_weight_holder, axis=-1)  # To normalize the weight to get a probability distribution
 
     # Normalize the weight to get the probability distribution
     np.divide(nn_weight_holder, tmp[:, np.newaxis], out=nn_weight_holder)
