@@ -99,8 +99,10 @@ def js_distance_safe(p, q, base=np.e):
     """
     Calculate the Jensen-Shannon distance for tow distribution p,q for a specific base
 
-    :param p: 1-D numpy array which should have the same shape as q. np.sum(p) can be any positive number.
-    :param q: 1-D numpy array which should have the same shape as p. np.sum(q) can be any positive number.
+    :param p: 1-D numpy array which should have the same shape as q. np.sum(p) can be any positive
+                number.
+    :param q: 1-D numpy array which should have the same shape as p. np.sum(q) can be any positive
+                number.
     :param base: The base value for the logarithm
     :return: The Jensen-Shannon distance. Notice that this is a metric which means it's the
     square root of the Jensen-Shannon divergence.
@@ -117,17 +119,19 @@ def js_distance_batch(p, q, base=np.e):
     """
     Calculate the Jensen-Shannon distance between each pair of distributions in 2D arrays p and q.
 
-    :param p: 2D numpy array. The dimension 1 should be a probability distribution. i.e. np.sum(p, axis=1) should be
-                a 1D array of 1s.
-    :param q: 2D numpy array. The dimension 1 should be a probability distribution. i.e. np.sum(p, axis=1) should be
-                a 1D array of 1s.
+    :param p: 2D numpy array. The dimension 1 should be a probability distribution. i.e.
+                np.sum(p, axis=1) should be a 1D array of 1s.
+    :param q: 2D numpy array. The dimension 1 should be a probability distribution. i.e.
+                np.sum(p, axis=1) should be a 1D array of 1s.
     :param base: The base value for the logarithm
-    :return: 1D numpy array for the Jensen-Shannon distance for each pairs of distributions in p and q.
+    :return: 1D numpy array for the Jensen-Shannon distance for each pairs
+                of distributions in p and q.
     """
 
     # First step: check the shape
     if len(p.shape) != 2 or len(q.shape) != 2:
-        raise Exception("Both p and q has to be 2D numpy arrays where p[i,:] is a probability distribution for "
+        raise Exception("Both p and q has to be 2D numpy arrays where p[i,:] is a " +
+                        "probability distribution for " +
                         "each i and q[j,:] is a probability for each j.")
 
     if p.shape != q.shape:
@@ -163,8 +167,8 @@ def log_likelihood_poisson_spi(samples, distributions):
     calculate the largest log-likelihood for all possible intensities.
 
     Poisson distribution is :  e^(-lambda I_n) (lambda I_n)^(k_n) / k_n !
-    where lambda is the overall intensity while I_n is the simulation value. Here I assume that the summation
-    of I_n to be one.
+    where lambda is the overall intensity while I_n is the simulation value. Here I assume that
+    the summation of I_n to be one.
 
     Therefore the log-likelihood on each pixel is
 
@@ -181,12 +185,14 @@ def log_likelihood_poisson_spi(samples, distributions):
         (\sum k_n) log (\sum k_n)/e  + \sum (k_n log I_n)  -  \sum log (k_n !)
 
     :param samples: Sample array [sample number, sample dimension] dtype has to be int.
-    :param distributions: Distribution arrays [orientation number, distribution dimension]  distribution dimension
-                            should be the same as the sample dimension.
+    :param distributions: Distribution arrays [orientation number, distribution dimension]
+                            distribution dimension should be the same as the sample dimension.
                             Attention: There can not be any value in the distribution to be zero.
 
-    :return: [[maximal log-likelihood, the corresponding orientation, the corresponding intensity],  <-- sample 1
-              [                                                                                  ],  <-- sample 2
+    :return: [[maximal log-likelihood, the corresponding orientation,
+                                                the corresponding intensity],  <-- sample 1
+              [
+                                                                           ],  <-- sample 2
                ...
                ]
     """
@@ -195,7 +201,8 @@ def log_likelihood_poisson_spi(samples, distributions):
     intensity = np.sum(samples, axis=-1, dtype=np.float64)
     first_term = np.multiply(intensity, np.log(intensity) - 1)
 
-    # Second step: Calculate the second term. The result is of shape [sample number, orientation number]
+    # Second step: Calculate the second term.
+    # The result is of shape [sample number, orientation number]
     second_term = np.matmul(samples, np.log(np.transpose(distributions)))
 
     # Third step: Calculate the third term

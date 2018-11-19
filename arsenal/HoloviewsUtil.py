@@ -2,10 +2,12 @@ import numpy as np
 import holoviews as hv
 
 
-########################################################################################################
+####################################################################################################
 # Assemble and show the patterns
-########################################################################################################
-def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, value_range, height, width):
+####################################################################################################
+def assemble_patterns_image(data_holder, data_shape,
+                            row_num, col_num, index,
+                            value_range, height, width):
     """
     After the program has obtained the index of the patterns in the selected region,
     this function randomly choose several of the patterns to show in a grid-space.
@@ -38,8 +40,9 @@ def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, va
                 tmp_image = hv.Image(data_holder[idxes[x, y]]).options(height=height,
                                                                        width=width,
                                                                        cmap='jet'
-                                                                       ).redim.range(z=(value_range[0],
-                                                                                        value_range[1]))
+                                                                       ).redim.range(
+                    z=(value_range[0],
+                       value_range[1]))
 
                 image_holder.update({(x, y): tmp_image})
 
@@ -57,9 +60,10 @@ def assemble_patterns_image(data_holder, data_shape, row_num, col_num, index, va
 
         # Use blank image to fill in the other spaces
         image_holder.update({index_list[l]: hv.Image(np.zeros(data_shape,
-                                                              dtype=np.float64)).options(height=height,
-                                                                                         width=width,
-                                                                                         cmap='jet')
+                                                              dtype=np.float64)).options(
+            height=height,
+            width=width,
+            cmap='jet')
                              for l in range(index_num, row_num * col_num)})
 
     return hv.GridSpace(image_holder).options(shared_xaxis=False, shared_yaxis=False)
@@ -73,7 +77,8 @@ def assemble_patterns_curve(y_data_array, x_data, row_num, col_num, index, heigh
     Specifically, each pattern in this function is a holoview curve object. This function also
     assume that all curves share the same x-axis.
 
-    :param y_data_array: 2D numpy array of the shape [n, curve_length] where n is the pattern number in total.
+    :param y_data_array: 2D numpy array of the shape [n, curve_length] where n is the
+                        pattern number in total.
     :param x_data: The x coordinate of the curve.
     :param row_num: The row number of the grid space
     :param col_num: The column number of the grid space
@@ -107,10 +112,11 @@ def assemble_patterns_curve(y_data_array, x_data, row_num, col_num, index, heigh
                                                        y_data
                                                        )).options(width=width,
                                                                   height=height
-                                                                  ).redim.range(x=(x_data.min() - x_span * 0.05,
-                                                                                   x_data.max() + x_span * 0.05),
-                                                                                y=(y_data.min() - y_span * 0.05,
-                                                                                   y_data.max() + y_span * 0.05))})
+                                                                  ).redim.range(
+                    x=(x_data.min() - x_span * 0.05,
+                       x_data.max() + x_span * 0.05),
+                    y=(y_data.min() - y_span * 0.05,
+                       y_data.max() + y_span * 0.05))})
     else:
         # When we do not have so many patterns, first layout
         # all the patterns available and then fill the other
@@ -128,10 +134,11 @@ def assemble_patterns_curve(y_data_array, x_data, row_num, col_num, index, heigh
                                                           y_data)
                                                          ).options(width=width,
                                                                    height=height
-                                                                   ).redim.range(x=(x_data.min() - x_span * 0.05,
-                                                                                    x_data.max() + x_span * 0.05),
-                                                                                 y=(y_data.min() - y_span * 0.05,
-                                                                                    y_data.max() + y_span * 0.05))})
+                                                                   ).redim.range(
+                x=(x_data.min() - x_span * 0.05,
+                   x_data.max() + x_span * 0.05),
+                y=(y_data.min() - y_span * 0.05,
+                   y_data.max() + y_span * 0.05))})
 
         # Assemble the psudo-image
         image_holder.update({index_list[l]: hv.Curve((x_data,

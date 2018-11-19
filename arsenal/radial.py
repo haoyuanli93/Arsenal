@@ -1,5 +1,5 @@
 import numpy as np
-from arsenal.util import get_wavelength_m
+from arsenal.physics import get_wavelength_m
 
 
 def get_radial_distribution(pattern, category_map, number_of_interval):
@@ -22,22 +22,27 @@ def get_radial_distribution(pattern, category_map, number_of_interval):
 def wrapper_get_pixel_map(detector, run_num,
                           photon_energy, number_of_interval, radial_range="auto"):
     """
-    This wrapper function takes the detector instance and the number of intervals and the radial arange to inspect.
+    This wrapper function takes the detector instance and the number of intervals and the radial
+     arange to inspect.
 
     :param: detector : The detector instance
     :param: number_of_intervals: The number of intervals to dividies the radial range.
-    :param: radial_range: The radial range to inspect. Notice that this is the momentum range to inspect.
-         The unit is 1/meter. The way to calculate the momentum is 2*np.pi/wavelength. The wavelength is in meter.
-         This function also return a momentum length_map, you can modify your choice with knowledge from that
-         output.
+    :param: radial_range: The radial range to inspect. Notice that this is the momentum range to
+                            inspect. The unit is 1/meter. The way to calculate the momentum is
+                             2*np.pi/wavelength. The wavelength is in meter. This function also
+                             return a momentum length_map, you can modify your choice with
+                            knowledge from that output.
 
     :return: category map, momentum_length_map
     """
 
     # Get momentum length map stack
     coordinate = detector.coords_xyz(par=run_num)
-    momentum_map_stack, coordinate_new, direction, distance = get_momentum_map(coor_xyz=coordinate,
-                                                                               photon_energy=photon_energy)
+    (momentum_map_stack,
+     coordinate_new,
+     direction,
+     distance) = get_momentum_map(coor_xyz=coordinate,
+                                  photon_energy=photon_energy)
     momentum_length_map_stack = np.sqrt(np.sum(np.square(momentum_map_stack), axis=-1))
 
     # Detector distance
@@ -71,7 +76,11 @@ def wrapper_get_pixel_map(detector, run_num,
     distance_correction = np.square(distance_detector / distance)
     geometry_correction = np.multiply(angle_correction, distance_correction)
 
-    return category_map, momentum_length_map_stack, np.mean(ends, axis=-1), polarization_correction, geometry_correction
+    return (category_map,
+            momentum_length_map_stack,
+            np.mean(ends, axis=-1),
+            polarization_correction,
+            geometry_correction)
 
 
 ####################################################################
@@ -142,7 +151,8 @@ def get_pixel_map(values, ends, output_mode="per class"):
         return _class_in_situ
 
     else:
-        raise Exception("The value of the output_mode is invalid. Please use either \'in situ\' or \'per class\'. ")
+        raise Exception("The value of the output_mode is invalid. " +
+                        "Please use either \'in situ\' or \'per class\'. ")
 
 
 ####################################################################
@@ -183,8 +193,9 @@ def get_momentum_map(coor_xyz, photon_energy):
 
     # Get refracted wave
     """
-    Previously, the direction is the diffraction direction. The difference between this and the forward direction
-    is the scattered direction. The scattered momentum is the this difference times 2pi/ wavelength.
+    Previously, the direction is the diffraction direction. The difference between this 
+    and the forward direction is the scattered direction. The scattered momentum is the
+     this difference times 2pi/ wavelength.
     """
     refracted = np.copy(direction)
     refracted[:, :, :, 2] -= 1
@@ -195,5 +206,3 @@ def get_momentum_map(coor_xyz, photon_energy):
     refracted *= 2. * np.pi / wavelength
 
     return refracted, coordinate, direction, length
-
-

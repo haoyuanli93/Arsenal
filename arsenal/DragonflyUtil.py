@@ -115,7 +115,8 @@ def merge_single_slice(quaternion, _slice, model3d, weight, detector, size):
 
     :param quaternion: The quaternion array
     :param _slice: The slice to save
-
+    :param model3d:
+    :param weight:
     :param detector:
     :param size:
     :return:
@@ -190,6 +191,7 @@ def merge_single_slice(quaternion, _slice, model3d, weight, detector, size):
 
         f = fx * fy * fz
         weight[((x + 1) % size) * size * size + ((y + 1) % size) * size + ((z + 1) % size)] += f
-        model3d[((x + 1) % size) * size * size + ((y + 1) % size) * size + ((z + 1) % size)] += f * w
+        model3d[((x + 1) % size) * size * size +
+                ((y + 1) % size) * size + ((z + 1) % size)] += f * w
 
     return np.array([model3d, weight])

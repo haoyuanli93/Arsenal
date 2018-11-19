@@ -40,7 +40,8 @@ def get_index_map_np(txt_file):
         index_map[data_num_list[l]:data_num_list[l + 1], 0] = l
 
         # Local indexes
-        index_map[data_num_list[l]:data_num_list[l + 1], 1] = np.arange(data_num_list[l], dtype=np.int)
+        index_map[data_num_list[l]:data_num_list[l + 1], 1] = np.arange(data_num_list[l],
+                                                                        dtype=np.int)
 
     # Global indexes
     index_map[:, 2] = np.arange(data_num_tot, dtype=np.int)

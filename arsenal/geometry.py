@@ -4,9 +4,9 @@ from numba import jit
 from arsenal.rare import cummulate_product_with_local_exclusion_dim1
 
 
-########################################################################################################################
+###################################################################################################
 # General geometric functions
-########################################################################################################################
+###################################################################################################
 @jit
 def quaternion_to_rotation_matrix(quaternion):
     """
@@ -44,9 +44,9 @@ def quaternion_to_rotation_matrix(quaternion):
     return rot
 
 
-########################################################################################################################
+##################################################################################################
 # General geometric functions
-########################################################################################################################
+##################################################################################################
 def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference_point_m):
     """
     Calculate the solid angle for each pixel with respect to the reference point.
@@ -59,9 +59,9 @@ def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference
                                             /   --- pixel 3
                                            _    --- pixel 4
 
-    Each pixel has an independent orientation and area and position. This position is the absolute position
-    with respect to some known origin. The reference is the interaction center. The solid angle is calculated
-    with respect to this reference point.
+    Each pixel has an independent orientation and area and position. This position is the absolute
+    position with respect to some known origin. The reference is the interaction center. The solid
+    angle is calculatedwith respect to this reference point.
 
     :param pixel_area_m: This is the pixel area in meter. This is a 1d array.
     :param pixel_position_m: This the pixel position in meter. This is a 2D array. [pixel number, 3]
@@ -76,7 +76,8 @@ def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference
                                [x1,y1,z1] -- pixel 1
                                ...
                                ]
-    :param reference_point_m:  This is the position of the reference point with respect to the origin in meter.
+    :param reference_point_m:  This is the position of the reference point with respect to the
+                                origin in meter.
     :return: The solid angle of each pixel.
     """
 
@@ -94,7 +95,8 @@ def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference
     #
     # Here, area*cos(theta) is the area perpendicular to the radius.
 
-    true_area = np.multiply(pixel_area_m, np.sum(np.multiply(pixel_orientation, pixel_directions), axis=-1))
+    true_area = np.multiply(pixel_area_m,
+                            np.sum(np.multiply(pixel_orientation, pixel_directions), axis=-1))
     # Because the normal direction can be either positive or negative, but
     # solid angle can only be positive, take absolute values.
     true_area = np.abs(true_area)
@@ -103,9 +105,9 @@ def get_solid_angle(pixel_area_m, pixel_position_m, pixel_orientation, reference
     return solid_angle
 
 
-########################################################################################################################
+####################################################################################################
 # General pixel interpolation
-########################################################################################################################
+####################################################################################################
 @jit('void(int64, float64[:], float64[:,:], float64[:])', nopython=True, parallel=True)
 def get_distance_list(pixel_num, single_point, reference_point_list, output):
     """
@@ -125,7 +127,8 @@ def get_distance_list(pixel_num, single_point, reference_point_list, output):
                             (reference_point_list[l, 2] - single_point[2]) ** 2)
 
 
-@jit('void(int64, int64, int64, float64[:,:], float64[:,:], int64[:,:], float64[:,:])', nopython=True, parallel=True)
+@jit('void(int64, int64, int64, float64[:,:], float64[:,:], int64[:,:], float64[:,:])',
+     nopython=True, parallel=True)
 def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
                                                      point_num_ref,
                                                      nearest_neighbor_num,
@@ -134,7 +137,8 @@ def get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new,
                                                      nn_index_holder,
                                                      nn_distance_holder):
     """
-    Calculate the nearest neighbor of points in the new point list with respect to the old point list.
+    Calculate the nearest neighbor of points in the new point list with respect to the old point
+    list.
 
     :param point_num_new:
     :param point_num_ref:
@@ -181,8 +185,10 @@ def py_get_nearest_point_index_and_weight_3d(point_list_ref, point_list_new, nea
     point_num_new = point_list_new.shape[0]
     point_num_ref = point_list_ref.shape[0]
 
-    nn_index_holder = np.ascontiguousarray(np.ones((point_num_new, nearest_neighbor_num), dtype=np.int64))
-    nn_distance_holder = np.ascontiguousarray(np.ones((point_num_new, nearest_neighbor_num), dtype=np.float64))
+    nn_index_holder = np.ascontiguousarray(
+        np.ones((point_num_new, nearest_neighbor_num), dtype=np.int64))
+    nn_distance_holder = np.ascontiguousarray(
+        np.ones((point_num_new, nearest_neighbor_num), dtype=np.float64))
 
     # Calculate the nearest neighbor
     get_nearest_point_and_distance_arbitrary_mesh_3d(point_num_new=point_num_new,
@@ -196,7 +202,8 @@ def py_get_nearest_point_index_and_weight_3d(point_list_ref, point_list_new, nea
     # Calculate the weight
     nn_weight_holder = cummulate_product_with_local_exclusion_dim1(num_dim1=nearest_neighbor_num,
                                                                    arry=nn_distance_holder)
-    tmp = np.sum(nn_weight_holder, axis=-1)  # To normalize the weight to get a probability distribution
+    tmp = np.sum(nn_weight_holder,
+                 axis=-1)  # To normalize the weight to get a probability distribution
 
     # Normalize the weight to get the probability distribution
     np.divide(nn_weight_holder, tmp[:, np.newaxis], out=nn_weight_holder)
@@ -225,14 +232,14 @@ def detector_mapping(pixel_num, nearest_neighbor_num, index_map, weight, raw_pat
             new_pattern[index_map[l, n]] += raw_pattern[l] * weight[l, n]
 
 
-########################################################################################################################
+###################################################################################################
 # Geometry function for special cases
-########################################################################################################################
+###################################################################################################
 @jit(nonpython=True, parallel=True)
 def get_nearest_point_and_weight(pixel_position_reciprocal, voxel_length):
     """
-    In a 3D space, assume that we have a position vector (x,y,z) and we know the length each pixel represents,
-    then calculate the nearest
+    In a 3D space, assume that we have a position vector (x,y,z) and we know the length each pixel
+    represents, then calculate the nearest
 
     :param pixel_position_reciprocal: The position of each pixel in the reciprocal space in
     :param voxel_length:

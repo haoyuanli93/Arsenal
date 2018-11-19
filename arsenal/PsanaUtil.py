@@ -29,7 +29,8 @@ def setup_exp(exp_name, run_num, det_name,
     :param mask_central_on:
     :param mask_unbond_on:
     :param mask_unbondnrs_on:
-    :return: detector object, run object, times object, 2d pattern shape, pattern stack shape, mask stack, 2d mask
+    :return: detector object, run object, times object, 2d pattern shape, pattern stack shape,
+            mask stack, 2d mask
     """
 
     # Initialize the datasource
@@ -256,10 +257,9 @@ def get_detector_polarization_correction(detector, run_num, polarization):
     """
     pixel_info = get_pixel_info(detector=detector, run_num=run_num)
 
-    polarization_correction = ap.get_intensity_polarization_effect(pixel_position_m=pixel_info['pixel position 1d'],
-                                                                   reference_position_m=np.zeros(3, dtype=np.float64),
-                                                                   polarization=polarization)
-    return polarization_correction
+    return ap.get_polarization_correction(pixel_position_m=pixel_info['pixel position 1d'],
+                                          reference_position_m=np.zeros(3, dtype=np.float64),
+                                          polarization=polarization)
 
 
 def get_detector_solid_angle_per_pixel(detector, run_num):

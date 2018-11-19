@@ -14,33 +14,12 @@ def time_stamp():
     return stamp
 
 
-###########################################################################################################
-# photon properties
-###########################################################################################################
-def get_wavelength_m(photon_energy_ev):
-    """
-    Return the wavelength of the photon.
-
-    :param: photon_energy: The photon energy in eV
-    :return: 1.23984197386209e-06 / photon_energy . This is the wavelength in meter.
-    """
-    return 1.23984197386209e-06 / photon_energy_ev
 
 
-def get_energy_ev(wavelength_m):
-    """
-    Return the energy of the photon.
 
-    :param: wavelength_m: The wavelength energy in meter
-    :return: 1.23984197386209e-06 / wavelength . This is the wavelength in meter.
-            This is in eV
-    """
-    return 1.23984197386209e-06 / wavelength_m
-
-
-###########################################################################################################
+###################################################################################################
 # mask manipulation
-###########################################################################################################
+###################################################################################################
 def cast_to_bool(mask, good=1, bad=0):
     """
     Cast the mask from float or int to bool
@@ -62,9 +41,9 @@ def cast_to_bool(mask, good=1, bad=0):
     return mask_bool
 
 
-##########################################################################################################
+#################################################################################################
 # File IO
-##########################################################################################################
+#################################################################################################
 def make_directory(path):
     """
     This function safely create a path. If a path already exists, it does nothing

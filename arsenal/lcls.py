@@ -1,15 +1,14 @@
 import numpy as np
 import h5py as h5
-import arsenal.util
 
 """
 This module focuses on applications in LCLS that  does not require psana
 """
 
 
-###########################################################################################################
+###################################################################################################
 # Psocake
-###########################################################################################################
+###################################################################################################
 def cast_numpy_to_txt(arr, output_file):
     """
     In psocake, in spi mode, current, the generate average pattern function only produce
@@ -72,7 +71,7 @@ def get_cxi_file_position(exp_line, exp_name, user_name, process_stage, run_num)
     return file_name
 
 
-def get_cxi_photon_energy(exp_line, exp_name, user_name, process_stage, run_num):
+def get_cxi_photon_energy_jule(exp_line, exp_name, user_name, process_stage, run_num):
     """
     Get the photon energy from the cxi file
 
@@ -92,6 +91,31 @@ def get_cxi_photon_energy(exp_line, exp_name, user_name, process_stage, run_num)
     # Get photon energy
     with h5.File(file_name, 'r') as h5file:
         holder = np.array(h5file['/LCLS/photon_energy_eV'])
+        photon_energy = np.mean(holder)
+
+    return photon_energy
+
+
+def get_cxi_photon_wavelength_a(exp_line, exp_name, user_name, process_stage, run_num):
+    """
+    Get the photon energy from the cxi file
+
+    :param exp_line: The experiment line: AMO or CXI or ...
+    :param exp_name: The experiment name: amo86615 amox26916 or ...
+    :param user_name: The user name
+    :param process_stage: The process stage: scratch or results ...
+    :param run_num: The run number
+    :return:
+    """
+    # Construct the file address of the corresponding cxi file
+    file_name = get_cxi_file_position(exp_line=exp_line,
+                                      exp_name=exp_name,
+                                      process_stage=process_stage,
+                                      user_name=user_name,
+                                      run_num=run_num)
+    # Get photon energy
+    with h5.File(file_name, 'r') as h5file:
+        holder = np.array(h5file['/LCLS/photon_wavelength_A'])
         photon_energy = np.mean(holder)
 
     return photon_energy

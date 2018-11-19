@@ -1,5 +1,4 @@
 from scipy import optimize
-import numpy as np
 from numba import jit
 
 
@@ -32,7 +31,10 @@ def fit_for_linear_function(x_data, y_data, a_init=0., b_init=0.,
     params, params_covariance = optimize.curve_fit(linear, x_data, y_data,
                                                    p0=(a_init, b_init),
                                                    method="dogbox",
-                                                   bounds=([b_range[0], a_range[0]], [b_range[1], a_range[1]]))
+                                                   bounds=([b_range[0],
+                                                            a_range[0]],
+                                                           [b_range[1],
+                                                            a_range[1]]))
     if covariance:
         return params, params_covariance
     else:
