@@ -18,7 +18,8 @@ setup(
                       'numba',
                       'holoviews',
                       'scipy',
-                      'mpi4py'],
+                      'mpi4py',
+                      'scikit-image'],
     platforms=["Linux"],
     url='https://github.com/haoyuanli93/DiffusionMap'
 )
