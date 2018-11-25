@@ -19,7 +19,8 @@ setup(
                       'holoviews',
                       'scipy',
                       'mpi4py',
-                      'scikit-image'],
+                      'scikit-image',
+                      'imageio'],
     platforms=["Linux"],
     url='https://github.com/haoyuanli93/DiffusionMap'
 )
