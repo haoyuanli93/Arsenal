@@ -63,8 +63,8 @@ with h5.File(input_h5file, 'r') as h5file:
         dataset_shape = h5file['batch_{}_pattern'.format(l)].shape
         pattern_num += dataset_shape[0]
 
-print("There are totally {} batches to process.")
-print("There are totally {} patterns to render.")
+print("There are totally {} batches to process.".format(batch_num))
+print("There are totally {} patterns to render.".format(pattern_num))
 
 ######################################################
 # Begin the rendering
