@@ -16,11 +16,7 @@ This is a special version of LCLS. In this version,
 I has assumed the following facts.
 
 1. One would like to process all the patterns in the h5file.
-2. Each dataset in the h5file is named in the following way
-    i. Patterns are saved to datasets with name "batch_0_pattern"
-    ii. Indices are saved to datasets with name "batch_0_index"
-3. The name of the h5files are of the form
-        
+2. Patterns are saved to datasets with name "batch_0_pattern"        
     
 """
 
@@ -48,14 +44,7 @@ threshold = args.threshold
 with h5.File(input_h5file, 'r') as h5file:
 
     # Get batch number
-    tmp = len(list(h5file.keys()))
-    if np.mod(tmp, 2) == 0:
-        batch_num = int(tmp / 2)
-    else:
-        raise Exception("The dataset number in the h5file should be even. \n"
-                        "However, this h5file contains an odd number of datasets. \n"
-                        "Please check if this is the correct h5file you would like \n"
-                        "to process.")
+    batch_num = len(list(h5file.keys()))
 
     # Get pattern number
     pattern_num = 0
