@@ -143,3 +143,52 @@ def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num):
         evt_idx_list = np.array(h5file['/LCLS/eventNumber'], dtype=np.int64)
 
     return evt_idx_list
+
+
+def get_cxi_pattern_eventtime(exp_line, exp_name, user_name, process_stage, run_num):
+    """
+    Get the event time from the cxi file
+
+    :param exp_line: The experiment line: AMO or CXI or ...
+    :param exp_name: The experiment name: amo86615 amox26916 or ...
+    :param user_name: The user name
+    :param process_stage: The process stage: scratch or results ...
+    :param run_num: The run number
+    :return:
+    """
+    # Construct the file address of the corresponding cxi file
+    file_name = get_cxi_file_position(exp_line=exp_line,
+                                      exp_name=exp_name,
+                                      process_stage=process_stage,
+                                      user_name=user_name,
+                                      run_num=run_num)
+    # Get event index energy
+    with h5.File(file_name, 'r') as h5file:
+        machinetime = np.array(h5file['/LCLS/machineTime'], dtype=np.int64)
+        machinetimenanoseconds = np.array(h5file['/LCLS/machineTimeNanoSeconds'], dtype=np.int64)
+
+    return machinetime * (10**9) + machinetimenanoseconds
+
+
+def get_cxi_pattern_fiducial(exp_line, exp_name, user_name, process_stage, run_num):
+    """
+    Get the photon energy from the cxi file
+
+    :param exp_line: The experiment line: AMO or CXI or ...
+    :param exp_name: The experiment name: amo86615 amox26916 or ...
+    :param user_name: The user name
+    :param process_stage: The process stage: scratch or results ...
+    :param run_num: The run number
+    :return:
+    """
+    # Construct the file address of the corresponding cxi file
+    file_name = get_cxi_file_position(exp_line=exp_line,
+                                      exp_name=exp_name,
+                                      process_stage=process_stage,
+                                      user_name=user_name,
+                                      run_num=run_num)
+    # Get event index energy
+    with h5.File(file_name, 'r') as h5file:
+        fiducial_list = np.array(h5file['/LCLS/fiducial'], dtype=np.int64)
+
+    return fiducial_list
