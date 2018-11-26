@@ -91,52 +91,35 @@ for run_num in run_num_list:
     ds_shape = ds_exmaple.shape
 
     ################################################################################################
-    # [AUTO] Divide the index list
-    ################################################################################################
-    if pattern_num <= 100:
-        sub_lists = [index_to_process, ]
-    else:
-        sub_lists_num = pattern_num // 100
-        print("There are roughly {} batches to process.".format(sub_lists_num))
-        # Get sublists
-        sub_lists = np.array_split(ary=index_to_process, indices_or_sections=sub_lists_num, axis=0)
-
-    ################################################################################################
     # [AUTO] Load and downsample all the patterns
     ################################################################################################
     with h5.File(output_address + output_name, 'w') as h5file:
         # For different batches
         batch_counter = 0
 
-        # Loop through this list of sublists
-        for sublist in sub_lists:
+        tic = time.time()
 
-            tic = time.time()
-            # First, get to know the index number in this list
-            idx_num = sublist.shape[0]
-            # Construct the shape of the holder variable
-            holder_shape = (idx_num, ds_shape[0], ds_shape[1])
-            holder = np.zeros(holder_shape)
+        # Construct the shape of the holder variable
+        holder_shape = (pattern_num, ds_shape[0], ds_shape[1])
+        holder = np.zeros(holder_shape)
 
-            # Extract all the patterns from this sublist
-            idx_counter = 0
-            for idx in sublist:
-                et = psana.EventTime(int(eventtime_to_process[idx]),
-                                     fiducial[idx])
-                evt = run.event(et)
-                sample = det.photons(evt, adu_per_photon=130)
+        # Extract all the patterns from this sublist
+        for idx in range(pattern_num):
+            et = psana.EventTime(int(eventtime_to_process[idx]),
+                                 fiducial[idx])
+            evt = run.event(et)
+            sample = det.photons(evt, adu_per_photon=130)
 
-                sample_ds = sm.block_reduce(sample, (ds_ratio, ds_ratio), np.sum)
+            sample_ds = sm.block_reduce(sample, (ds_ratio, ds_ratio), np.sum)
 
-                holder[idx_counter] = sample_ds
-                idx_counter += 1
+            holder[idx] = sample_ds
 
-            # save_the down sampled pattern
-            h5file.create_dataset('/batch_{}_index'.format(batch_counter), data=sublist)
-            h5file.create_dataset('/batch_{}_pattern'.format(batch_counter), data=holder)
+        # save_the down sampled pattern
+        h5file.create_dataset('/batch_{}_index'.format(batch_counter), data=index_to_process)
+        h5file.create_dataset('/batch_{}_pattern'.format(batch_counter), data=holder)
 
-            # Update the batch_counter
-            batch_counter += 1
+        # Update the batch_counter
+        batch_counter += 1
 
-            toc = time.time()
-            print("It takes {:.2f} seconds to process {} patterns.".format(toc - tic, idx_num))
+        toc = time.time()
+        print("It takes {:.2f} seconds to process {} patterns.".format(toc - tic, pattern_num))
