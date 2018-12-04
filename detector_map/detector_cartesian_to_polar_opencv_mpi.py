@@ -1,3 +1,18 @@
+"""
+
+                Detector pixels mapping 1
+
+This series of scripts calculate the pixel map between two detectors.
+For each pixel in one detector, the scripts calculate the nearest
+points and the corresponding weights of this pixel in the reciprocal
+space with respect to the other pixel.
+
+For this specific script, MPI is utilized. It aims to transform this pattern from
+the cartesian grid to a r-theta grid
+
+"""
+
+
 import sys
 import time
 
