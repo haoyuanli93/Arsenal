@@ -9,15 +9,34 @@ space with respect to the other pixel.
 
 For this specific script, only a single cpu is used. It uses the opencv package.
 
-"""
+In this script, I do the following things
+1. Convert the pattern on the cartesian grid to polar grid
+2. Save the patterns on the polar grid to the h5 file
 
+"""
+import argparse
+import numpy as np
 import sys
 
 sys.path.append('/reg/neh/home/haoyuan/Documents/my_repos/Arsenal/')
 
-import numpy as np
 import arsenal.geometry as ag
 from arsenal import PsanaUtil
+
+
+#################################################################################################
+# Parse the input
+#################################################################################################
+parser = argparse.ArgumentParser(description="Hello. I am the parser. Please provide "
+                                             "some arguments for this program.")
+
+# Add some optional arguments
+parser.add_argument('--input_h5_file',
+                    type=str,
+                    help="Specify the h5 file to process.")
+parser.add_argument("--output_h5_file",
+                    type=str,
+                    help="Specify the h5 file to store the processed data.")
 
 ###################################################################################################
 # Initialize amox34117 detector
