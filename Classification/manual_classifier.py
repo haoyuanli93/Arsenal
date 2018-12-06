@@ -1,6 +1,7 @@
 import numpy as np
 from tkinter import *
 from tkinter import ttk
+import os
 import glob
 import argparse
 
@@ -13,7 +14,7 @@ parser.add_argument('--input_folder', type=str,
                     help="Specify the input folder containing all the patterns to classify.")
 
 args = parser.parse_args()
-input_folder = args.input_folder
+input_folder = os.path.abspath(args.input_folder)
 
 ######################################################
 # Define Variables
@@ -29,11 +30,14 @@ image_index = None
 ######################################################
 def load_image_fun():
     global pattern, Img, image_index, label
-    pattern = PhotoImage(master=mainframe, file=input_folder + '/image_{}.png'.format(image_index)).zoom(3)
+    pattern = PhotoImage(master=mainframe,
+                         file=os.path.abspath(input_folder +
+                                              '/image_{}.png'.format(image_index))).zoom(3)
 
     Img.config(image=pattern)
     if not (label is None):
-        img_title.set("Diffraction Pattern Index: %d ; Current Label: %s" % (image_index, label[image_index]))
+        img_title.set("Diffraction Pattern Index: {}; Current Label: {}".format(image_index,
+                                                                                label[image_index]))
     return
 
 
@@ -69,7 +73,12 @@ def save_label_fun():
     return
 
 
-def next_image_fun(*args):
+def next_image_fun(*key):
+
+    # Nothing
+    if key is None:
+        pass
+
     global image_files, image_index, image_number, pattern, Img
 
     if image_index <= image_number - 2:
@@ -79,22 +88,17 @@ def next_image_fun(*args):
     return
 
 
-def next_run_number_fun():
-    pass
-    return
+def previous_image_fun(*key):
 
+    # Nothing
+    if key is None:
+        pass
 
-def previous_image_fun(*args):
     global image_files, image_index, image_number, pattern, Img
     if image_index >= 1:
         image_index -= 1
         load_image_fun()
         new_label_text.set('0')
-    return
-
-
-def previous_run_number_fun():
-    pass
     return
 
 
@@ -113,7 +117,11 @@ def test_data():
     return True
 
 
-def set_good(*args):
+def set_good(*key):
+
+    if key is None:
+        pass
+
     # 0 indicates that this image was not inspected
     # 1 indicates that this is a good single hit
     # 2 indicates that this is a bad hit
@@ -123,7 +131,11 @@ def set_good(*args):
     return
 
 
-def set_bad(*args):
+def set_bad(*key):
+
+    if key is None:
+        pass
+
     # 0 indicates that this image was not inspected
     # 1 indicates that this is a good single hit
     # 2 indicates that this is a bad hit
@@ -163,7 +175,7 @@ Img.grid(column=0, row=1, rowspan=8)
 
 # Load data
 data_address = StringVar()
-data_address.set('../output/')
+data_address.set(input_folder)
 
 Data_address = ttk.Entry(mainframe, textvariable=data_address, width=50)
 Data_address.grid(column=2, row=1, columnspan=2)
@@ -173,7 +185,7 @@ load_data_button.grid(column=1, row=1)
 
 # Create label 
 create_label = StringVar()
-create_label.set('../output/label.npy')
+create_label.set(input_folder + '/label.npy')
 
 Create_label = ttk.Entry(mainframe, textvariable=create_label, width=50)
 Create_label.grid(column=2, row=2)
@@ -183,7 +195,7 @@ create_label_button.grid(column=1, row=2)
 
 # Load label
 load_label = StringVar()
-load_label.set('../output/label.npy')
+load_label.set(input_folder + '/label.npy')
 
 Load_label = ttk.Entry(mainframe, textvariable=load_label, width=50)
 Load_label.grid(column=2, row=3)
@@ -193,7 +205,7 @@ load_label_button.grid(column=1, row=3)
 
 # Save label
 save_label = StringVar()
-save_label.set('../output/label.npy')
+save_label.set(input_folder + '/label.npy')
 
 Save_label = ttk.Entry(mainframe, textvariable=save_label, width=50)
 Save_label.grid(column=2, row=4)
@@ -201,19 +213,12 @@ Save_label.grid(column=2, row=4)
 save_label_button = ttk.Button(mainframe, text='Save Label', command=save_label_fun, width=10)
 save_label_button.grid(column=1, row=4)
 
-# Change run number and image
+# Change image
 next_image = ttk.Button(mainframe, text='Next Image', command=next_image_fun, width=18)
 next_image.grid(column=1, row=5, sticky='e')
 
-next_run_number = ttk.Button(mainframe, text='Next Run Number', command=next_run_number_fun, width=18)
-next_run_number.grid(column=2, row=5, sticky='w')
-
 previous_image = ttk.Button(mainframe, text='Previous Image', command=previous_image_fun, width=18)
 previous_image.grid(column=1, row=6, sticky='e')
-
-previous_run_number = ttk.Button(mainframe, text='Previous Run Number',
-                                 command=previous_run_number_fun, width=18)
-previous_run_number.grid(column=2, row=6, sticky='w')
 
 # Show current run number, image index
 new_label_label = ttk.Label(mainframe, text='New Label')
@@ -228,7 +233,9 @@ set_label = ttk.Button(mainframe, text='Set Label', command=set_label_fun)
 set_label.grid(column=1, row=8, sticky='e')
 
 # Pad to get more space
-for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
+for child in mainframe.winfo_children():
+    child.grid_configure(padx=5, pady=5)
+
 # Add a size grip to change the shape easier
 ttk.Sizegrip(root).grid(column=999, row=999, sticky=(S, E))
 root.grid_columnconfigure(0, weight=1)
