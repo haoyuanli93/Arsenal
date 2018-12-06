@@ -53,7 +53,7 @@ def load_data_fun():
 def create_label_fun():
     global image_files, image_number, label, create_label
     if test_data():
-        label = np.zeros(image_number)
+        label = np.zeros(image_number, dtype=np.int64)
         np.save(create_label.get(), label)
     else:
         return
