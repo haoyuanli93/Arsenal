@@ -171,13 +171,13 @@ pattern = PhotoImage(master=mainframe,
                           '/my_repos/Manual-Classification/asset/Start.png').zoom(3)
 
 Img = Label(mainframe, image=pattern)
-Img.grid(column=0, row=1, rowspan=8)
+Img.grid(column=0, row=1, rowspan=7)
 
 # Load data
 data_address = StringVar()
 data_address.set(input_folder)
 
-Data_address = ttk.Entry(mainframe, textvariable=data_address, width=50)
+Data_address = ttk.Entry(mainframe, textvariable=data_address, width=75)
 Data_address.grid(column=2, row=1, columnspan=2)
 
 load_data_button = ttk.Button(mainframe, text='Load Data', command=load_data_fun, width=10)
@@ -187,7 +187,7 @@ load_data_button.grid(column=1, row=1)
 create_label = StringVar()
 create_label.set(input_folder + '/label.npy')
 
-Create_label = ttk.Entry(mainframe, textvariable=create_label, width=50)
+Create_label = ttk.Entry(mainframe, textvariable=create_label, width=75)
 Create_label.grid(column=2, row=2)
 
 create_label_button = ttk.Button(mainframe, text='Create Label', command=create_label_fun, width=10)
@@ -197,7 +197,7 @@ create_label_button.grid(column=1, row=2)
 load_label = StringVar()
 load_label.set(input_folder + '/label.npy')
 
-Load_label = ttk.Entry(mainframe, textvariable=load_label, width=50)
+Load_label = ttk.Entry(mainframe, textvariable=load_label, width=75)
 Load_label.grid(column=2, row=3)
 
 load_label_button = ttk.Button(mainframe, text='Load Label', command=load_label_fun, width=10)
@@ -207,7 +207,7 @@ load_label_button.grid(column=1, row=3)
 save_label = StringVar()
 save_label.set(input_folder + '/label.npy')
 
-Save_label = ttk.Entry(mainframe, textvariable=save_label, width=50)
+Save_label = ttk.Entry(mainframe, textvariable=save_label, width=75)
 Save_label.grid(column=2, row=4)
 
 save_label_button = ttk.Button(mainframe, text='Save Label', command=save_label_fun, width=10)
@@ -222,15 +222,15 @@ previous_image.grid(column=1, row=6, sticky='e')
 
 # Show current run number, image index
 new_label_label = ttk.Label(mainframe, text='New Label')
-new_label_label.grid(column=1, row=7, sticky='e')
+new_label_label.grid(column=2, row=5, sticky='e')
 
 new_label_text = StringVar()
 new_label_text.set('0')
 new_label_entry = ttk.Entry(mainframe, text=new_label_text, width=6)
-new_label_entry.grid(column=2, row=7, sticky='w')
+new_label_entry.grid(column=3, row=5, sticky='w')
 
 set_label = ttk.Button(mainframe, text='Set Label', command=set_label_fun)
-set_label.grid(column=1, row=8, sticky='e')
+set_label.grid(column=2, row=6, sticky='e')
 
 # Pad to get more space
 for child in mainframe.winfo_children():
