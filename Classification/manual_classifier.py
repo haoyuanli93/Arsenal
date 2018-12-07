@@ -118,7 +118,7 @@ def create_label_function():
             backup_name = input_folder + "/label_backup_{}.npy".format(time_stamp)
 
             # Backup the existing label file and create a new file
-            subprocess.call(["mv", " {} {}".format(label_file, backup_name)])
+            subprocess.call(["mv", label_file, backup_name])
 
             # Send out the message
             messagebox.showinfo(title="Information",
