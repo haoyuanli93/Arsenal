@@ -179,7 +179,7 @@ def save_label_function():
 
     unique_label = np.unique(label)
     for value in unique_label:
-        print("{} patterns are classified as {}.".format(np.sum(label[label == value]), value))
+        print("{} patterns are classified as {}.".format(np.count_nonzero(label == value), value))
 
 
 def next_image_function(*key):
