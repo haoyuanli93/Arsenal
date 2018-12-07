@@ -122,12 +122,13 @@ def create_label_function():
 
             # Send out the message
             messagebox.showinfo(title="Information",
-                                message=" The a label.npy file already exists in the directory \n" +
-                                        "{}\n".format(input_folder) +
+                                message=" The a label.npy file" +
+                                        " already exists in the directory \n \n" +
+                                        "{}\n \n".format(input_folder) +
                                         "Therefore, the original label " +
-                                        "file is now renamed to be\n" +
-                                        "{}\n".format(backup_name) +
-                                        "A new label file is create at \n" +
+                                        "file is now renamed to be\n \n" +
+                                        "{}\n \n".format(backup_name) +
+                                        "A new label file is create at \n \n" +
                                         "{}".format(label_file))
 
             label = np.zeros(image_number, dtype=np.int64)
@@ -170,8 +171,8 @@ def save_label_function():
     global label, label_file, image_number
     np.save(label_file, label)
     messagebox.showinfo(title="Information",
-                        message="Save the label to the file\n " +
-                                "{}\n".format(label_file) +
+                        message="Save the label to the file\n \n " +
+                                "{}\n \n".format(label_file) +
                                 "There are totally {} patterns.".format(image_number))
 
     print("There are totally {} patterns classified.".format(image_number))
@@ -275,8 +276,7 @@ def set_four(*key):
 ######################################################
 
 root = Tk()
-root.title("Manual Classifier:\n"
-           "1:good,  2:bad,  3:water, 4:other")
+root.title("Manual Classifier")
 root.option_add("*font", "Times 18")
 
 style = ttk.Style()
@@ -294,6 +294,11 @@ mainframe.rowconfigure(0, weight=1)
 img_title = StringVar()
 img_title.set('Start the Classifier')
 ttk.Label(mainframe, textvariable=img_title).grid(column=0, row=0)
+
+# Show the label meaning
+label_meaning = StringVar()
+label_meaning.set('1=Good  2=Bad  3=Water  4=Other')
+ttk.Label(mainframe, textvariable=label_meaning).grid(column=2, row=0, columnspan=2)
 
 ######################################################
 # Specify entries in the framework
