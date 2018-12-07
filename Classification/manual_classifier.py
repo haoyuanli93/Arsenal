@@ -147,10 +147,10 @@ def set_bad(*key):
 
 root = Tk()
 root.title("Manual Classifier")
-root.option_add("*font", "Helvetica 20")
+root.option_add("*font", "Helvetica 16")
 
 style = ttk.Style()
-style.configure('.', font=('Helvetica', 20))
+style.configure('.', font=('Helvetica', 16))
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
