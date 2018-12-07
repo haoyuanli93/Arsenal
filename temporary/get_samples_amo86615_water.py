@@ -5,7 +5,7 @@ import h5py as h5
 patterns_num = 1000
 
 # Construct the run nummber list and the file name list
-runnum_list = [186, 187, 190, 191, 192, 193, 194, 196, 197]
+runnum_list = [186, 188, 190, 191, 192, 193, 194, 196, 197]
 
 
 # Define a function to get the file name
