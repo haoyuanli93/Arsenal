@@ -24,6 +24,9 @@ with h5.File("/reg/d/psdm/amo/amo86615/scratch/"
              "haoyuan/experiment_data/amo86615_sample.h5", 'w') as outputfile:
     # Loop through the run number list
     for runnum in runnum_list:
+
+        print(runnum)
+
         # get file name
         input_file_name = get_input_file_name(run_num=runnum)
 
@@ -48,4 +51,4 @@ with h5.File("/reg/d/psdm/amo/amo86615/scratch/"
                 # Load the pattern
                 holder[idx] = np.array(dataset[local_idx])
 
-        outputfile.create_dataset(runnum, data=holder)
+        outputfile.create_dataset("{}".format(runnum), data=holder)
