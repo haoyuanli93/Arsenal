@@ -37,7 +37,7 @@ with h5.File("/reg/d/psdm/amo/amo86615/scratch/"
 
             # Get dataset number
             dataset_num = int(len(list(h5file.keys())))
-            dataset_choice = np.random.randint(low=0, high=dataset_num - 1, size=patterns_num)
+            dataset_choice = np.random.randint(low=0, high=dataset_num, size=patterns_num)
 
             for idx in range(patterns_num):
 
@@ -46,7 +46,7 @@ with h5.File("/reg/d/psdm/amo/amo86615/scratch/"
 
                 dataset = h5file[dataset_name]
                 dataset_pattern_num = dataset.shape[0]
-                local_idx = np.random.randint(low=0, high=dataset_pattern_num-1, size=1)[0]
+                local_idx = np.random.randint(low=0, high=dataset_pattern_num, size=1)[0]
 
                 # Load the pattern
                 holder[idx] = np.array(dataset[local_idx])
