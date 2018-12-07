@@ -42,8 +42,8 @@ def load_image_fun():
 
 
 def load_data_fun():
-    global image_files, image_number, data_address, image_index
-    image_files = np.sort(glob.glob(data_address.get() + '/image_*.png'))
+    global image_files, image_number, input_folder, image_index
+    image_files = np.sort(glob.glob(input_folder + '/image_*.png'))
     image_number = len(image_files)
     image_index = 0
     load_image_fun()
@@ -51,7 +51,11 @@ def load_data_fun():
 
 
 def create_label_fun():
-    global image_files, image_number, label, create_label
+    global image_files, image_number, label, input_folder, create_label
+
+    # Split the create label variable
+    entry_list = 
+
     if test_data():
         label = np.zeros(image_number, dtype=np.int64)
         np.save(create_label.get(), label)
