@@ -171,9 +171,9 @@ Img.grid(column=0, row=1, rowspan=7)
 
 # Load data
 data_address = StringVar()
-data_address.set(input_folder)
+data_address.set(input_folder[-40:])
 
-Data_address = ttk.Entry(mainframe, textvariable=data_address[-40:], width=40)
+Data_address = ttk.Entry(mainframe, textvariable=data_address, width=40)
 Data_address.grid(column=2, row=1, columnspan=2)
 
 load_data_button = ttk.Button(mainframe, text='Load Data', command=load_data_fun, width=18)
