@@ -147,10 +147,10 @@ def set_bad(*key):
 
 root = Tk()
 root.title("Manual Classifier")
-root.option_add("*font", "Helvetica 16")
+root.option_add("*font", "Times 16")
 
 style = ttk.Style()
-style.configure('.', font=('Helvetica', 16))
+style.configure('.', font=('Times', 16))
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -167,7 +167,7 @@ pattern = PhotoImage(master=mainframe,
                           '/my_repos/Manual-Classification/asset/Start.png').zoom(3)
 
 Img = Label(mainframe, image=pattern)
-Img.grid(column=0, row=1, rowspan=7)
+Img.grid(column=0, row=1, rowspan=6)
 
 # Load data
 data_address = StringVar()
