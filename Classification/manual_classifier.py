@@ -39,6 +39,7 @@ parser.add_argument('--input_folder', type=str,
 args = parser.parse_args()
 input_folder = os.path.abspath(args.input_folder)
 
+print("Input folder: ",input_folder)
 # Define the label file
 label_file = input_folder + r'/label.npy'
 
@@ -276,13 +277,13 @@ def set_four(*key):
 root = Tk()
 root.title("Manual Classifier:\n"
            "1:good,  2:bad,  3:water, 4:other")
-root.option_add("*font", "Times 16")
+root.option_add("*font", "Times 18")
 
 style = ttk.Style()
 style.map("TEntry",
           fieldbackground=[("active", "white"),
-                           ("disabled", "yellow")])
-style.configure('.', font=('Times', 16))
+                           ("disabled", "white")])
+style.configure('.', font=('Times', 18))
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
