@@ -279,6 +279,9 @@ root.title("Manual Classifier:\n"
 root.option_add("*font", "Times 16")
 
 style = ttk.Style()
+style.map("TEntry",
+          fieldbackground=[("active", "white"),
+                           ("disabled", "yellow")])
 style.configure('.', font=('Times', 16))
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
