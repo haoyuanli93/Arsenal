@@ -74,7 +74,6 @@ def save_label_fun():
 
 
 def next_image_fun(*key):
-
     # Nothing
     if key is None:
         pass
@@ -89,7 +88,6 @@ def next_image_fun(*key):
 
 
 def previous_image_fun(*key):
-
     # Nothing
     if key is None:
         pass
@@ -118,7 +116,6 @@ def test_data():
 
 
 def set_good(*key):
-
     if key is None:
         pass
 
@@ -132,7 +129,6 @@ def set_good(*key):
 
 
 def set_bad(*key):
-
     if key is None:
         pass
 
@@ -177,40 +173,40 @@ Img.grid(column=0, row=1, rowspan=7)
 data_address = StringVar()
 data_address.set(input_folder)
 
-Data_address = ttk.Entry(mainframe, textvariable=data_address, width=75)
+Data_address = ttk.Entry(mainframe, textvariable=data_address, width=60)
 Data_address.grid(column=2, row=1, columnspan=2)
 
-load_data_button = ttk.Button(mainframe, text='Load Data', command=load_data_fun, width=10)
+load_data_button = ttk.Button(mainframe, text='Load Data', command=load_data_fun, width=18)
 load_data_button.grid(column=1, row=1)
 
 # Create label 
 create_label = StringVar()
 create_label.set(input_folder + '/label.npy')
 
-Create_label = ttk.Entry(mainframe, textvariable=create_label, width=75)
-Create_label.grid(column=2, row=2)
+Create_label = ttk.Entry(mainframe, textvariable=create_label, width=60)
+Create_label.grid(column=2, row=2, columnspan=2)
 
-create_label_button = ttk.Button(mainframe, text='Create Label', command=create_label_fun, width=10)
+create_label_button = ttk.Button(mainframe, text='Create Label', command=create_label_fun, width=18)
 create_label_button.grid(column=1, row=2)
 
 # Load label
 load_label = StringVar()
 load_label.set(input_folder + '/label.npy')
 
-Load_label = ttk.Entry(mainframe, textvariable=load_label, width=75)
-Load_label.grid(column=2, row=3)
+Load_label = ttk.Entry(mainframe, textvariable=load_label, width=60)
+Load_label.grid(column=2, row=3, columnspan=2)
 
-load_label_button = ttk.Button(mainframe, text='Load Label', command=load_label_fun, width=10)
+load_label_button = ttk.Button(mainframe, text='Load Label', command=load_label_fun, width=18)
 load_label_button.grid(column=1, row=3)
 
 # Save label
 save_label = StringVar()
 save_label.set(input_folder + '/label.npy')
 
-Save_label = ttk.Entry(mainframe, textvariable=save_label, width=75)
-Save_label.grid(column=2, row=4)
+Save_label = ttk.Entry(mainframe, textvariable=save_label, width=60)
+Save_label.grid(column=2, row=4, columnspan=2)
 
-save_label_button = ttk.Button(mainframe, text='Save Label', command=save_label_fun, width=10)
+save_label_button = ttk.Button(mainframe, text='Save Label', command=save_label_fun, width=18)
 save_label_button.grid(column=1, row=4)
 
 # Change image
