@@ -55,11 +55,12 @@ with h5.File(project_address + "output/water.h5", 'w') as waterfile:
 
         # Loop through all the indexes:
         for local_idx in range(pattern_num):
-            temp_holder[local_idx] = PsanaUtil.get_photon_2d_fast(detector=det,
-                                                                  exp_run=run,
-                                                                  exp_times=times,
-                                                                  event_id=selected_index,
-                                                                  adu_per_photon=130)
+            temp_holder[local_idx] = PsanaUtil.get_photon_2d_fast(
+                detector=det,
+                exp_run=run,
+                exp_times=times,
+                event_id=selected_index[local_idx],
+                adu_per_photon=130)
 
         # Save the result to the new group
         new_group.create_dataset("patterns", data=temp_holder)
