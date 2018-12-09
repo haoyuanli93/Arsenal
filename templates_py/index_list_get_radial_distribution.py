@@ -7,9 +7,9 @@ sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
 from arsenal import PsanaUtil
 
-#######################################################################################################################
+####################################################################################################
 # Define parameters
-#######################################################################################################################
+####################################################################################################
 exp_line = 'amo'
 exp_name = 'amox26916'
 user_name = 'haoyuan'
@@ -21,7 +21,8 @@ process_stage = 'scratch'
 output_address = '/reg/d/psdm/{}/{}/results/{}/'.format(exp_line, exp_name, user_name)
 
 # Load mask
-mask = np.load('/reg/d/psdm/amo/amox26916/scratch/haoyuan/psocake/r0085/masks/pnccdFront_mask_hit_finder.npy')
+mask = np.load('/reg/d/psdm/amo/amox26916/scratch/haoyuan/psocake/'
+               'r0085/masks/pnccdFront_mask_hit_finder.npy')
 
 # Load the index to process
 index_to_process = np.load('../output/classification_round_4_hits_global_idx.npy')
@@ -30,9 +31,9 @@ index_to_process = np.load('../output/classification_round_4_hits_global_idx.npy
 number_of_interval = 300
 radial_range = "auto"
 
-#######################################################################################################################
+##################################################################################################
 # Initialize datasource and the detector
-#######################################################################################################################
+##################################################################################################
 # Get data source
 det, run, times, evt, info_dict = PsanaUtil.setup_exp(exp_name=exp_name,
                                                       run_num=run_num,
@@ -48,18 +49,18 @@ photon_energy = arsenal.lcls.get_cxi_photon_energy(exp_line=exp_line,
                                                    user_name=user_name,
                                                    run_num=run_num)
 
-#######################################################################################################################
+###################################################################################################
 # Load mask and cast to bool
-#######################################################################################################################
+###################################################################################################
 # Get 2d mask
 mask_2d = det.image(nda_in=mask, evt=evt)
 
 # Cast the mask to boolean values
 mask_bool = arsenal.util.cast_to_bool(mask=mask, good=1, bad=0)
 
-#######################################################################################################################
+###################################################################################################
 # Get momentum mesh
-#######################################################################################################################
+###################################################################################################
 # Initialize
 (category_map,
  momentum_length_map,
@@ -71,18 +72,18 @@ mask_bool = arsenal.util.cast_to_bool(mask=mask, good=1, bad=0)
                                                       number_of_interval=number_of_interval,
                                                       radial_range=radial_range)
 
-#######################################################################################################################
+###################################################################################################
 # Get masked category map
-#######################################################################################################################
+###################################################################################################
 category_map_masked = category_map[mask]
 category_list = np.sort(np.unique(category_map_masked))
 category_num = category_list.shape[0]
 print("There are {} categories to calculate.".format(category_num))
 print(category_list)
 
-#######################################################################################################################
+###################################################################################################
 # Loop through all patterns
-#######################################################################################################################
+###################################################################################################
 # Create a holder for all the distributions
 holder = np.zeros((pattern_num, category_num))
 
@@ -94,14 +95,18 @@ tic = time.time()
 counter = 0
 for pattern_idx in index_to_process:
     # Get the pattern
-    sample = PsanaUtil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
+    sample = PsanaUtil.get_pattern_stack_fast(detector=det,
+                                              exp_run=run,
+                                              exp_times=times,
+                                              event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
 
     # Get the distribution
     for cat_idx in range(category_num):
-        holder[counter, cat_idx] = np.mean(sample_masked[category_map_masked == category_list[cat_idx]])
+        holder[counter, cat_idx] = np.mean(sample_masked[category_map_masked ==
+                                                         category_list[cat_idx]])
 
     if np.mod(counter, 100) == 0:
         time_holder.append(time.time() - tic)
@@ -111,7 +116,9 @@ for pattern_idx in index_to_process:
     counter += 1
 
 # Get a time stamp
-output_file = output_address + 'radial_distribution_run_{}_list_{}.h5'.format(run_num, arsenal.util.time_stamp())
+output_file = str(output_address +
+                  'radial_distribution_run_{}_list_{}.h5'.format(run_num,
+                                                                 arsenal.util.time_stamp()))
 print("Processing results will be saved to folder {}.".format(output_file))
 
 # Save the result
