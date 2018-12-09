@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import h5py as h5
 import time
+import skimage.measure as sm
 
 sys.path.append('/reg/neh/home5/haoyuan/Documents/my_repos/Arsenal')
 import arsenal
@@ -19,7 +20,6 @@ total_pattern_holder = []
 
 # Find and retrieve all the selected patterns
 with h5.File(project_address + "output/water.h5", 'w') as waterfile:
-
     # Loop through all run numbers
     for runnum in runnum_list:
 
@@ -70,4 +70,8 @@ with h5.File(project_address + "output/water.h5", 'w') as waterfile:
         print("It takes {:.2f} seconds to finishes run {}.".format(toc - tic, runnum))
         print("There are totally {} patterns in this run.".format(pattern_num))
 
-    waterfile.create_dataset('all_patterns', data=np.vstack(total_pattern_holder))
+    total_dataset = np.vstack(total_pattern_holder)
+    waterfile.create_dataset('all_patterns', data=total_dataset)
+    waterfile.create_dataset('ds_samples', data=sm.block_reduce(total_dataset,
+                                                                (1, 4, 4),
+                                                                np.sum))
