@@ -75,7 +75,7 @@ mask_bool = arsenal.util.cast_to_bool(mask=mask, good=1, bad=0)
 ###################################################################################################
 # Get masked category map
 ###################################################################################################
-category_map_masked = category_map[mask]
+category_map_masked = category_map[mask_bool]
 category_list = np.sort(np.unique(category_map_masked))
 category_num = category_list.shape[0]
 print("There are {} categories to calculate.".format(category_num))

@@ -102,7 +102,10 @@ tic = time.time()
 counter = 0
 for pattern_idx in index_to_process:
     # Get the pattern
-    sample = PsanaUtil.get_pattern_stack_fast(detector=det, exp_run=run, exp_times=times, event_id=pattern_idx)
+    sample = PsanaUtil.get_pattern_stack_fast(detector=det,
+                                              exp_run=run,
+                                              exp_times=times,
+                                              event_id=pattern_idx)
 
     # Apply the mask
     sample_masked = sample[mask]
@@ -112,10 +115,14 @@ for pattern_idx in index_to_process:
 
     # Get the distribution
     for cat_idx in range(category_num):
-        mean_holder[counter, cat_idx] = np.mean(sample_masked[category_map_masked == category_list[cat_idx]])
-        std_holder[counter, cat_idx] = np.std(sample_masked[category_map_masked == category_list[cat_idx]])
-        min_holder[counter, cat_idx] = np.min(sample_masked[category_map_masked == category_list[cat_idx]])
-        max_holder[counter, cat_idx] = np.max(sample_masked[category_map_masked == category_list[cat_idx]])
+        mean_holder[counter, cat_idx] = np.mean(sample_masked[category_map_masked ==
+                                                              category_list[cat_idx]])
+        std_holder[counter, cat_idx] = np.std(sample_masked[category_map_masked ==
+                                                            category_list[cat_idx]])
+        min_holder[counter, cat_idx] = np.min(sample_masked[category_map_masked ==
+                                                            category_list[cat_idx]])
+        max_holder[counter, cat_idx] = np.max(sample_masked[category_map_masked ==
+                                                            category_list[cat_idx]])
 
     if np.mod(counter, 100) == 0:
         time_holder.append(time.time() - tic)
