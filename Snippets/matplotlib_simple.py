@@ -75,3 +75,27 @@ for l in range(8):
 
 # Show the canvas
 plt.show()
+
+
+##############################################################################
+# Show a pattern without boundary lines and labels
+##############################################################################
+
+pattern = np.zeros((128, 128))
+threshold = 10
+output_folder = '~/Downloads'
+
+fig = plt.figure(frameon=False)
+fig.set_size_inches(w=1, h=1)
+ax = plt.Axes(fig, [0., 0., 1., 1.])
+ax.set_axis_off()
+fig.add_axes(ax)
+
+# Render the image
+ax.imshow(pattern, vmax=threshold, aspect='auto', cmap='jet')
+
+# Save the data. Notice that VGG16 only works for 224 by 224 images.
+fig.savefig(output_folder + '/image.png', dpi=224)
+
+# Close the figure
+plt.close(fig)

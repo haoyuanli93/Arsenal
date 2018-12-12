@@ -168,8 +168,11 @@ for l in range(nrow):
                 ax.set_yticks(yticks)
                 ax.set_yticklabels(yticks_labels, fontsize=ytick_font_size)
 
+        ##############################################################################
+        # Add your personal code below
+        ##############################################################################
+        pass
+        ##############################################################################
 
 # Show the canvas
 plt.show()
-
-
