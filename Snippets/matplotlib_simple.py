@@ -1,6 +1,35 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+##############################################################################
+# Plot many patterns with colorbar
+##############################################################################
+diffraction = np.ones((128, 128), dtype=np.complex128)
+magnitude = np.ones((128, 128), dtype=np.float64)
+
+# Set up the canvas
+fig, axes = plt.subplots(nrows=2, ncols=2)
+fig.set_figheight(16)
+fig.set_figwidth(20)
+
+im = axes[0, 0].imshow(np.angle(diffraction), cmap='jet')
+fig.colorbar(im, ax=axes[0, 0])
+axes[0, 0].set_title("Phase")
+
+im = axes[0, 1].imshow(magnitude, vmax=50, cmap='jet')
+fig.colorbar(im, ax=axes[0, 1])
+axes[0, 1].set_title("Magnitude")
+
+im = axes[1, 0].imshow(np.abs(diffraction.real), vmax=10, cmap='jet')
+fig.colorbar(im, ax=axes[1, 0])
+axes[1, 0].set_title("Diffraction Real")
+
+im = axes[1, 1].imshow(np.abs(diffraction.imag), vmax=10, cmap='jet')
+fig.colorbar(im, ax=axes[1, 1])
+axes[1, 1].set_title("Diffraction Complex")
+
+# Show the canvas
+plt.show()
 
 ##############################################################################
 # Plot many patterns together
@@ -75,7 +104,6 @@ for l in range(8):
 
 # Show the canvas
 plt.show()
-
 
 ##############################################################################
 # Show a pattern without boundary lines and labels

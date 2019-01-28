@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 ##############################################################################
 # Plot many patterns together
 ##############################################################################
@@ -30,10 +29,10 @@ plot_num = 64  # How many patterns in total
 index_to_show = np.random.permutation(plot_num)[: nrow * ncol]  # select some data to show
 
 # [USER] Specify Data
-x_data_main = np.arange(128)   # The x data to show on the axis
-y_data_main = np.random.rand(plot_num, 128)   # The y data to show on the axis
+x_data_main = np.arange(128)  # The x data to show on the axis
+y_data_main = np.random.rand(plot_num, 128)  # The y data to show on the axis
 
-param_main = np.random.rand(plot_num)   # The first parameter associated with the plot
+param_main = np.random.rand(plot_num)  # The first parameter associated with the plot
 legend_main = "Data main"
 
 # Specify some other data to show
@@ -43,8 +42,8 @@ y_data_1 = np.random.rand(128)  # The second class of y data
 legend_1 = "Data 1"
 
 # Specify parameters associated with the data
-param_1 = np.random.rand(plot_num)   # The second parameter associated with the the plot
-param_2 = np.random.rand(plot_num)   # The third parameter associated with the the plot
+param_1 = np.random.rand(plot_num)  # The second parameter associated with the the plot
+param_2 = np.random.rand(plot_num)  # The third parameter associated with the the plot
 
 
 # TODO Allow the user to use functions to customize the dynamical y data
@@ -79,7 +78,7 @@ x_unit = "Unit"
 xtick_flag = True  # Whether not to use the default x tick
 xticks_span = 8
 xticks = x_data_main[::xticks_span]
-xticks_labels = ["{:.1f}".format(1/x) for x in xticks]
+xticks_labels = ["{:.1f}".format(1 / x) for x in xticks]
 
 # Y axis label
 yname = "Name of y axis"
@@ -105,7 +104,6 @@ ytick_font_size = 10
 fig, axes = plt.subplots(nrows=nrow, ncols=ncol)
 fig.set_figheight(fig_height)
 fig.set_figwidth(fig_width)
-
 
 # [AUTO] Plot the patterns
 for l in range(nrow):
@@ -140,7 +138,7 @@ for l in range(nrow):
             else:
                 # Calculate the y_lim
                 ylim_low = np.min(y_data_main[idx])
-                ylim_high = 1*ylim_low + 1. * (np.max(y_data_main[idx]) - ylim_low)
+                ylim_high = 1 * ylim_low + 1. * (np.max(y_data_main[idx]) - ylim_low)
 
                 y_lim = (ylim_low, ylim_high)
                 ax.set_ylim(y_lim)
