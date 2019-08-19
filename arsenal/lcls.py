@@ -121,7 +121,7 @@ def get_cxi_photon_wavelength_a(exp_line, exp_name, user_name, process_stage, ru
     return photon_energy
 
 
-def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num):
+def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num, get_filename=False):
     """
     Get the photon energy from the cxi file
 
@@ -130,6 +130,7 @@ def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num):
     :param user_name: The user name
     :param process_stage: The process stage: scratch or results ...
     :param run_num: The run number
+    :param get_filename:
     :return:
     """
     # Construct the file address of the corresponding cxi file
@@ -142,7 +143,10 @@ def get_cxi_pattern_idx(exp_line, exp_name, user_name, process_stage, run_num):
     with h5.File(file_name, 'r') as h5file:
         evt_idx_list = np.array(h5file['/LCLS/eventNumber'], dtype=np.int64)
 
-    return evt_idx_list
+    if get_filename:
+        return evt_idx_list, file_name
+    else:
+        return evt_idx_list
 
 
 def get_cxi_pattern_eventtime(exp_line, exp_name, user_name, process_stage, run_num):
@@ -167,7 +171,7 @@ def get_cxi_pattern_eventtime(exp_line, exp_name, user_name, process_stage, run_
         machinetime = np.array(h5file['/LCLS/machineTime'], dtype=np.int64)
         machinetimenanoseconds = np.array(h5file['/LCLS/machineTimeNanoSeconds'], dtype=np.int64)
 
-    return machinetime * (10**9) + machinetimenanoseconds
+    return machinetime * (10 ** 9) + machinetimenanoseconds
 
 
 def get_cxi_pattern_fiducial(exp_line, exp_name, user_name, process_stage, run_num):
