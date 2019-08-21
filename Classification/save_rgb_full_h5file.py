@@ -92,7 +92,7 @@ with h5.File(input_h5file, 'r') as h5file:
             # Save the data.
             # Notice that VGG16 only works for 224 by 224 images.
             # Notice that I need to name it with the global index in this h5file.
-            fig.savefig(output_folder + '/image_{}.png'.format(pattern_global_idx), dpi=224)
+            fig.savefig(output_folder + '/image_{}.png'.format(pattern_global_idx), dpi=256)
 
             # Update the global index
             pattern_global_idx += 1
@@ -111,7 +111,7 @@ with h5.File(input_h5file, 'r') as h5file:
 # Load the patterns and save them to h5 file
 #######################################################
 # Now read all the image and save to the jpg_array variable
-png_array = np.zeros((pattern_num, 224, 224, 3))
+png_array = np.zeros((pattern_num, 256, 256, 3))
 for l in range(pattern_num):
     png = imread(output_folder + '/image_{}.png'.format(l))
     png_array[l, :, :, :] = png[:, :, :3]
