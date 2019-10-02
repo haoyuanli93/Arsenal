@@ -308,7 +308,7 @@ ttk.Label(mainframe, textvariable=label_meaning).grid(column=2, row=0, columnspa
 ######################################################
 # Image
 pattern = PhotoImage(master=mainframe,
-                     file=r'C:\Users\hyli\Documents\GitHub\Arsenal\Classification\asset\Start.png').zoom(3)
+                     file=r'C:\Users\haoyuan\Documents\GitHub\Arsenal\Classification\asset\Start.png').zoom(3)
 
 Img = Label(mainframe, image=pattern)
 Img.grid(column=0, row=1, rowspan=6)
