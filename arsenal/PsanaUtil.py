@@ -281,3 +281,5 @@ def get_detector_solid_angle_per_pixel(detector, run_num):
                                      reference_point_m=np.zeros(3, dtype=np.float64))
 
     return solid_angle
+
+
