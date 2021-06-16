@@ -1,5 +1,14 @@
 import numpy as np
-from arsenal.physics import get_wavelength_m
+
+
+def get_wavelength_m(photon_energy_ev):
+    """
+    Return the wavelength of the photon.
+
+    :param: photon_energy: The photon energy in eV
+    :return: 1.23984197386209e-06 / photon_energy . This is the wavelength in meter.
+    """
+    return 1.23984197386209e-06 / photon_energy_ev
 
 
 def get_radial_distribution(pattern, category_map, number_of_interval):
@@ -188,8 +197,8 @@ def get_momentum_map(coor_xyz, photon_energy):
     length = np.sqrt(np.sum(np.square(coordinate), axis=-1))
 
     direction = np.zeros_like(coordinate)
-    for l in range(3):
-        direction[:, :, :, l] = coordinate[:, :, :, l] / length
+    for idx in range(3):
+        direction[:, :, :, idx] = coordinate[:, :, :, idx] / length
 
     # Get refracted wave
     """
